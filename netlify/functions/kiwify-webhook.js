@@ -1,83 +1,112 @@
 // ARQFLOW — Kiwify webhook
 // Netlify Function: /.netlify/functions/kiwify-webhook
 
+const crypto = require("crypto");
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return json(405, { ok: false, error: "Method not allowed" });
+    return json(405, {
+      ok: false,
+      error: "Method not allowed"
+    });
   }
 
-  const expectedToken = (process.env.KIWIFY_WEBHOOK_TOKEN || "").trim();
-  if (!expectedToken) {
-    return json(500, { ok: false, error: "KIWIFY_WEBHOOK_TOKEN not configured" });
+  const token = (process.env.KIWIFY_WEBHOOK_TOKEN || "").trim();
+
+  if (!token) {
+    return json(500, {
+      ok: false,
+      error: "KIWIFY_WEBHOOK_TOKEN not configured"
+    });
   }
 
-  let body = {};
-  try {
-    body = JSON.parse(event.body || "{}");
-  } catch {
-    return json(400, { ok: false, error: "Invalid JSON" });
-  }
+  const rawBody = event.body || "";
 
-  const headerToken =
-    event.headers?.["x-kiwify-token"] ||
-    event.headers?.["x-webhook-token"] ||
-    event.headers?.["x-token"] ||
+  // Kiwify envia a assinatura na query string.
+  const signature =
+    event.queryStringParameters?.signature ||
+    event.headers?.["x-kiwify-signature"] ||
     "";
 
-  const authHeader =
-    event.headers?.authorization || event.headers?.Authorization || "";
+  if (!signature) {
+    console.error("Kiwify: signature not found");
 
-  const bearerToken = authHeader.startsWith("Bearer ")
-    ? authHeader.slice(7).trim()
-    : "";
-
-  const queryToken =
-    event.queryStringParameters?.token ||
-    event.queryStringParameters?.webhook_token ||
-    "";
-
-  const bodyToken = body.token || body.webhook_token || "";
-
-  const receivedToken = [headerToken, bearerToken, queryToken, bodyToken]
-    .map(v => String(v || "").trim())
-    .find(v => v);
-
-  if (receivedToken !== expectedToken) {
-    return json(401, { ok: false, error: "Invalid webhook token" });
+    return json(401, {
+      ok: false,
+      error: "Signature not found"
+    });
   }
 
-  const eventType = String(body.webhook_event_type || "").toLowerCase();
-  const orderStatus = String(body.order_status || "").toLowerCase();
-  const email = String(body.Customer?.email || "").trim().toLowerCase();
-  const productId = body.Product?.product_id || null;
+  // Validação HMAC-SHA1 da Kiwify.
+  const expectedSignature = crypto
+    .createHmac("sha1", token)
+    .update(rawBody, "utf8")
+    .digest("hex");
 
-  if (!email) {
-    return json(400, { ok: false, error: "Customer.email not found" });
-  }
-
-  const expectedProductId =
-    (process.env.ARQFLOW_KIWIFY_PRODUCT_ID || "").trim();
+  const received = String(signature).trim().toLowerCase();
 
   if (
-    expectedProductId &&
-    productId &&
-    productId !== expectedProductId
+    received.length !== expectedSignature.length ||
+    !crypto.timingSafeEqual(
+      Buffer.from(received),
+      Buffer.from(expectedSignature)
+    )
   ) {
-    return json(200, {
-      ok: true,
-      ignored: true,
-      reason: "Different product"
+    console.error("Kiwify: invalid signature");
+
+    return json(401, {
+      ok: false,
+      error: "Invalid signature"
+    });
+  }
+
+  let body;
+
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return json(400, {
+      ok: false,
+      error: "Invalid JSON"
+    });
+  }
+
+  const eventType = String(
+    body.webhook_event_type || ""
+  ).toLowerCase();
+
+  const orderStatus = String(
+    body.order_status || ""
+  ).toLowerCase();
+
+  const email = String(
+    body.Customer?.email || ""
+  ).trim().toLowerCase();
+
+  const productId =
+    body.Product?.product_id || null;
+
+  if (!email) {
+    console.error("Kiwify: buyer email not found");
+
+    return json(400, {
+      ok: false,
+      error: "Customer.email not found"
     });
   }
 
   let status = null;
 
+  // Compra aprovada
   if (
     eventType === "order_approved" ||
     orderStatus === "paid"
   ) {
     status = "active";
-  } else if (
+  }
+
+  // Reembolso / chargeback
+  if (
     eventType === "order_refunded" ||
     eventType === "order_refunded_partial" ||
     eventType === "chargeback" ||
@@ -87,7 +116,13 @@ exports.handler = async (event) => {
     status = "inactive";
   }
 
+  // Boleto gerado, Pix gerado etc.
   if (!status) {
+    console.log(
+      "Kiwify event ignored:",
+      eventType || orderStatus || "unknown"
+    );
+
     return json(200, {
       ok: true,
       ignored: true,
@@ -102,6 +137,8 @@ exports.handler = async (event) => {
     (process.env.SUPABASE_SECRET_KEY || "").trim();
 
   if (!supabaseUrl || !supabaseKey) {
+    console.error("Supabase variables missing");
+
     return json(500, {
       ok: false,
       error: "Supabase environment variables not configured"
@@ -114,60 +151,72 @@ exports.handler = async (event) => {
     "Content-Type": "application/json"
   };
 
-  const encodedEmail = encodeURIComponent(email);
+  const emailEncoded =
+    encodeURIComponent(email);
 
-  const updateResponse = await fetch(
-    `${supabaseUrl}/rest/v1/licenses?email=eq.${encodedEmail}`,
-    {
-      method: "PATCH",
-      headers: {
-        ...headers,
-        Prefer: "return=minimal"
-      },
-      body: JSON.stringify({
-        product_id: productId,
-        status,
-        updated_at: new Date().toISOString()
-      })
-    }
-  );
-
-  if (!updateResponse.ok) {
-    console.error(
-      "Supabase update error:",
-      await updateResponse.text()
-    );
-
-    return json(500, {
-      ok: false,
-      error: "Failed to update license"
-    });
-  }
-
-  const lookupResponse = await fetch(
-    `${supabaseUrl}/rest/v1/licenses?select=id&email=eq.${encodedEmail}&limit=1`,
+  // Verifica se já existe licença.
+  const lookup = await fetch(
+    `${supabaseUrl}/rest/v1/licenses?select=id&email=eq.${emailEncoded}&limit=1`,
     {
       method: "GET",
       headers
     }
   );
 
-  if (!lookupResponse.ok) {
+  if (!lookup.ok) {
     console.error(
       "Supabase lookup error:",
-      await lookupResponse.text()
+      await lookup.text()
     );
 
     return json(500, {
       ok: false,
-      error: "Failed to verify license"
+      error: "Supabase lookup failed"
     });
   }
 
-  const rows = await lookupResponse.json();
+  const existing = await lookup.json();
 
-  if (!Array.isArray(rows) || rows.length === 0) {
-    const insertResponse = await fetch(
+  // Atualiza licença existente.
+  if (Array.isArray(existing) && existing.length > 0) {
+    const update = await fetch(
+      `${supabaseUrl}/rest/v1/licenses?email=eq.${emailEncoded}`,
+      {
+        method: "PATCH",
+        headers: {
+          ...headers,
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify({
+          product_id: productId,
+          status: status,
+          updated_at: new Date().toISOString()
+        })
+      }
+    );
+
+    if (!update.ok) {
+      console.error(
+        "Supabase update error:",
+        await update.text()
+      );
+
+      return json(500, {
+        ok: false,
+        error: "Supabase update failed"
+      });
+    }
+
+    console.log(
+      "ARQFLOW license updated:",
+      email,
+      status
+    );
+  }
+
+  // Cria nova licença.
+  else {
+    const insert = await fetch(
       `${supabaseUrl}/rest/v1/licenses`,
       {
         method: "POST",
@@ -176,30 +225,36 @@ exports.handler = async (event) => {
           Prefer: "return=minimal"
         },
         body: JSON.stringify({
-          email,
+          email: email,
           product_id: productId,
-          status
+          status: status
         })
       }
     );
 
-    if (!insertResponse.ok) {
+    if (!insert.ok) {
       console.error(
         "Supabase insert error:",
-        await insertResponse.text()
+        await insert.text()
       );
 
       return json(500, {
         ok: false,
-        error: "Failed to create license"
+        error: "Supabase insert failed"
       });
     }
+
+    console.log(
+      "ARQFLOW license created:",
+      email,
+      status
+    );
   }
 
   return json(200, {
     ok: true,
-    email,
-    status,
+    email: email,
+    status: status,
     event: eventType || orderStatus
   });
 };
