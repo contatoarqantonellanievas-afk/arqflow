@@ -564,7 +564,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--arq-pink);box-shadow:
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='arqflow_totalmente_zerado_v2';
+const KEY='arqflow_totalmente_zerado_v3';
 const baseInteriorService={
  id:'base-interiores',
  name:'Projeto de Interiores',
@@ -609,11 +609,18 @@ function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2400)}
 function pageHeader(kicker,title,desc,action=''){return `<div class="topbar"><div><div class="eyebrow">${kicker}</div><h1>${title}</h1><div class="muted" style="font-size:13px;margin-top:5px">${desc}</div></div>${action}</div>`}
 function calcPricing(p=state.pricing){
- const base=(+p.prolabore||0)+(+p.fixed||0)+(+p.variable||0);
- const productiveHours=(+p.hours||0)*(+p.productive||0)/100;
- const before=(productiveHours>0?base/productiveHours:0);
- const afterTax=before/(1-(+p.tax||0)/100);
- const final=afterTax*(1+(+p.margin||0)/100);
+ const prolabore=Math.max(0,+p.prolabore||0);
+ const fixed=Math.max(0,+p.fixed||0);
+ const variable=Math.max(0,+p.variable||0);
+ const hours=Math.max(0,+p.hours||0);
+ const productive=Math.min(100,Math.max(0,+p.productive||0));
+ const tax=Math.min(99.99,Math.max(0,+p.tax||0));
+ const margin=Math.max(0,+p.margin||0);
+ const base=prolabore+fixed+variable;
+ const productiveHours=hours*productive/100;
+ const before=productiveHours>0?base/productiveHours:0;
+ const afterTax=before/(1-tax/100);
+ const final=afterTax*(1+margin/100);
  const floor=afterTax;
  const ceiling=final*1.25;
  return {base,productiveHours,before,afterTax,final,floor,ceiling};
@@ -777,9 +784,11 @@ function openModal(title,body){
 function bind(){
  document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>render(b.dataset.page));
  document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));
- const sp=document.getElementById('savePricing'); if(sp)sp.onclick=()=>{['prolabore','fixed','variable','hours','productive','tax','margin'].forEach(k=>state.pricing[k]=+document.getElementById(k).value||0);state.pricing.hourly=calcPricing().final;save();toast('Precificação salva.');render('pricing')};
-  const pricingFields=['prolabore','fixed','variable','hours','productive','tax','margin'];
-  pricingFields.forEach(k=>{const el=document.getElementById(k);if(!el)return;el.addEventListener('focus',()=>{if(el.value==='0')el.value='';});el.addEventListener('input',()=>{const temp={};pricingFields.forEach(x=>{const input=document.getElementById(x);temp[x]=input&&input.value.trim()!==''?Number(input.value):0});const result=calcPricing(temp);const out=document.getElementById('pricingResult');if(out)out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';});el.addEventListener('blur',()=>{if(el.value.trim()==='')el.value='';});});
+ const pricingFields=['prolabore','fixed','variable','hours','productive','tax','margin'];
+  const readPricingFields=()=>{const next={...state.pricing};pricingFields.forEach(k=>{const el=document.getElementById(k);next[k]=(el&&el.value.trim()!=='')?Number(el.value):0;});return next};
+  const refreshPricing=()=>{const temp=readPricingFields();const result=calcPricing(temp);const out=document.getElementById('pricingResult');if(out)out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';return temp};
+  pricingFields.forEach(k=>{const el=document.getElementById(k);if(!el)return;el.addEventListener('focus',()=>{if(el.value==='0')el.value='';});el.addEventListener('input',()=>{const temp=refreshPricing();state.pricing={...state.pricing,...temp,hourly:calcPricing(temp).final};save();});el.addEventListener('blur',()=>{if(el.value.trim()==='')el.value='';});});
+  const sp=document.getElementById('savePricing'); if(sp)sp.onclick=()=>{const temp=refreshPricing();state.pricing={...state.pricing,...temp,hourly:calcPricing(temp).final};save();toast('Precificação salva.');render('pricing')};
   const firstPricingInput=document.getElementById('prolabore'); if(firstPricingInput) firstPricingInput.dispatchEvent(new Event('input'));
  const ns=document.getElementById('newService');if(ns)ns.onclick=()=>serviceModal();
  document.querySelectorAll('.editService').forEach(b=>b.onclick=()=>serviceModal(b.dataset.id));
@@ -815,15 +824,15 @@ function serviceModal(serviceId){
  };
 }
 function stepRow(i,e){return `<div class="stepRow" style="display:grid;grid-template-columns:1fr 100px;gap:8px;margin-top:8px">${field('sn'+i,'','text',e.name)}${field('sh'+i,'','number',e.hours)}</div>`}
-function loadSteps(){const s=state.services.find(x=>x.id===document.getElementById('serviceSelect').value);const box=document.getElementById('stepsBox');if(!s){box.innerHTML='<div class="empty">Selecione um serviço para carregar as etapas.</div>';updateBudgetPreview();return}box.innerHTML=`<div style="font-size:12px;color:#777;margin-bottom:9px">Selecione as etapas que farão parte do orçamento:</div><div class="checklist">${s.steps.map((e,i)=>`<label class="check"><input type="checkbox" class="stepCheck" data-hours="${e.hours}" checked> <span>${esc(e.name)}</span><strong style="margin-left:auto">${e.hours}h</strong></label>`).join('')}</div>`;document.querySelectorAll('.stepCheck').forEach(x=>x.onchange=updateBudgetPreview);updateBudgetPreview()}
-function updateBudgetPreview(){const s=state.services.find(x=>x.id===document.getElementById('serviceSelect')?.value);if(!s)return;const h=[...document.querySelectorAll('.stepCheck:checked')].reduce((a,x)=>a+(+x.dataset.hours||0),0)*(+document.getElementById('complexity').value||1);const c=calcPricing();const v=h*c.final;const min=h*c.floor;const max=h*c.ceiling;document.getElementById('budgetValue').textContent=money(v);document.getElementById('budgetMin').textContent=money(min);document.getElementById('budgetEstimated').textContent=money(v);document.getElementById('budgetMax').textContent=money(max);document.getElementById('budgetMeta').textContent=`${h.toFixed(1)} horas estimadas · complexidade aplicada · ${money(c.final)}/h`}
+function loadSteps(){const s=state.services.find(x=>x.id===document.getElementById('serviceSelect').value);const box=document.getElementById('stepsBox');if(!s){box.innerHTML='<div class="empty">Selecione um serviço para carregar as etapas.</div>';updateBudgetPreview();return}box.innerHTML=`<div style="font-size:12px;color:#777;margin-bottom:9px">Selecione as etapas que farão parte do orçamento:</div><div class="checklist">${s.steps.map((e,i)=>`<label class="check"><input type="checkbox" class="stepCheck" data-index="${i}" data-hours="${e.hours}" checked> <span>${esc(e.name)}</span><strong style="margin-left:auto">${e.hours}h</strong></label>`).join('')}</div>`;document.querySelectorAll('.stepCheck').forEach(x=>x.onchange=updateBudgetPreview);updateBudgetPreview()}
+function updateBudgetPreview(){const s=state.services.find(x=>x.id===document.getElementById('serviceSelect')?.value);if(!s){return}const complexity=+(document.getElementById('complexity')?.value||1);const h=[...document.querySelectorAll('.stepCheck:checked')].reduce((a,x)=>a+(+x.dataset.hours||0),0)*complexity;const c=calcPricing();const v=h*c.final;const min=h*c.floor;const max=h*c.ceiling;const valueEl=document.getElementById('budgetValue');const minEl=document.getElementById('budgetMin');const estEl=document.getElementById('budgetEstimated');const maxEl=document.getElementById('budgetMax');const metaEl=document.getElementById('budgetMeta');if(valueEl)valueEl.textContent=money(v);if(minEl)minEl.textContent=money(min);if(estEl)estEl.textContent=money(v);if(maxEl)maxEl.textContent=money(max);if(metaEl)metaEl.textContent=`${h.toFixed(1)} horas estimadas · complexidade aplicada · ${money(c.final)}/h`}
 function saveBudget(){
  const client=document.getElementById('clientName')?.value.trim()||'';
  const project=document.getElementById('project').value.trim();
  const sid=document.getElementById('serviceSelect').value;
  const s=state.services.find(x=>x.id===sid);
  if(!client||!project||!s)return toast('Informe o cliente, o nome do projeto e escolha o serviço.');
- const selected=[...document.querySelectorAll('.stepCheck:checked')].map((x,i)=>s.steps[i]).filter(Boolean);
+ const selected=[...document.querySelectorAll('.stepCheck:checked')].map(x=>s.steps[+x.dataset.index]).filter(Boolean);
  const complexity=+document.getElementById('complexity').value;
  const hours=selected.reduce((a,x)=>a+x.hours,0)*complexity;
  const value=hours*calcPricing().final;
