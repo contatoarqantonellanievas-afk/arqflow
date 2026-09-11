@@ -545,6 +545,58 @@ input:focus,select:focus,textarea:focus{border-color:var(--arq-pink);box-shadow:
 </style>
 </head>
 <body>
+  <script>
+(function () {
+  const acessoKiwify = new URLSearchParams(window.location.search).get('acesso');
+
+  if (acessoKiwify !== 'kiwify') {
+    document.documentElement.innerHTML = `
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ARQFLOW — Acesso restrito</title>
+        <style>
+          body{
+            margin:0;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#f5f3ee;
+            font-family:Arial,sans-serif;
+            color:#171717;
+            text-align:center;
+          }
+          .box{
+            max-width:500px;
+            padding:40px;
+          }
+          h1{
+            margin:0 0 12px;
+            font-size:28px;
+          }
+          p{
+            color:#666;
+            line-height:1.6;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="box">
+          <h1>Acesso restrito</h1>
+          <p>Esta ferramenta está disponível exclusivamente para clientes do ARQFLOW.</p>
+          <p>Acesse pelo link disponível na sua Área de Membros.</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    throw new Error('Acesso direto bloqueado.');
+  }
+})();
+</script>
 <div class="app">
 <aside class="sidebar">
   <div class="brand"><b>ARQFLOW</b><span>Precificação inteligente para projetos mais lucrativos.</span></div>
