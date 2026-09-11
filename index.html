@@ -676,7 +676,7 @@ function pricing(){
  </div><div class="actions"><button class="btn btn-olive" id="savePricing">Salvar precificação</button></div></div>
  <div class="result" style="display:flex;flex-direction:column;justify-content:center;min-height:260px;text-align:center">
    <div class="eyebrow" style="color:#85837C">VALOR CALCULADO</div>
-   <div class="big" style="font-size:48px;margin-top:12px">${money(c.final)}<span style="font-size:15px;font-weight:600"> / hora</span></div>
+   <div id="pricingResult" class="big" style="font-size:48px;margin-top:12px">${money(c.final)}<span style="font-size:15px;font-weight:600"> / hora</span></div>
    <div style="color:#6F6E68;font-size:13px;line-height:1.6;margin-top:8px">Valor/hora recomendado para sua precificação.</div>
  </div></div>`;
 }
@@ -778,6 +778,7 @@ function bind(){
  document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>render(b.dataset.page));
  document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));
  const sp=document.getElementById('savePricing'); if(sp)sp.onclick=()=>{['prolabore','fixed','variable','hours','productive','tax','margin'].forEach(k=>state.pricing[k]=+document.getElementById(k).value||0);state.pricing.hourly=calcPricing().final;save();toast('Precificação salva.');render('pricing')};
+  ['prolabore','fixed','variable','hours','productive','tax','margin'].forEach(k=>{const el=document.getElementById(k);if(el)el.addEventListener('input',()=>{const temp={};['prolabore','fixed','variable','hours','productive','tax','margin'].forEach(x=>temp[x]=+document.getElementById(x)?.value||0);const result=calcPricing(temp);const out=document.getElementById('pricingResult');if(out)out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';});});
  const ns=document.getElementById('newService');if(ns)ns.onclick=()=>serviceModal();
  document.querySelectorAll('.editService').forEach(b=>b.onclick=()=>serviceModal(b.dataset.id));
  document.querySelectorAll('.deleteService').forEach(b=>b.onclick=()=>{if(confirm('Excluir este serviço?')){state.services=state.services.filter(s=>s.id!==b.dataset.id);save();render('services')}})
