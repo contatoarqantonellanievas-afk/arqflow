@@ -20,38 +20,7 @@ exports.handler = async (event) => {
     });
   }
 const rawBody = event.body || "";
-  }
-
-  let status = null;
-
-  if (!supabaseUrl || !supabaseKey) {
-    console.error("Supabase variables missing");
-
-    return json(500, {
-      ok: false,
-      error: "Supabase environment variables not configured"
-    });
-  }
-
-  const headers = {
-    apikey: supabaseKey,
-    Authorization: `Bearer ${supabaseKey}`,
-    "Content-Type": "application/json"
-  };
-
-  const emailEncoded =
-    encodeURIComponent(email);
-
-  // Verifica se já existe licença.
-  const lookup = await fetch(
-    `${supabaseUrl}/rest/v1/licenses?select=id&email=eq.${emailEncoded}&limit=1`,
-    {
-      method: "GET",
-      headers
-    }
-  );
-
-  if (!lookup.ok) {
+ 
     console.error(
       "Supabase lookup error:",
       await lookup.text()
