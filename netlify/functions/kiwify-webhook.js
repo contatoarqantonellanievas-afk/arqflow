@@ -19,40 +19,7 @@ exports.handler = async (event) => {
       error: "KIWIFY_WEBHOOK_TOKEN not configured"
     });
   }
-
-  const rawBody = event.body || "";
-
-  try {
-    body = JSON.parse(rawBody);
-  } catch {
-    return json(400, {
-      ok: false,
-      error: "Invalid JSON"
-    });
-  }
-
-  const eventType = String(
-    body.webhook_event_type || ""
-  ).toLowerCase();
-
-  const orderStatus = String(
-    body.order_status || ""
-  ).toLowerCase();
-
-  const email = String(
-    body.Customer?.email || ""
-  ).trim().toLowerCase();
-
-  const productId =
-    body.Product?.product_id || null;
-
-  if (!email) {
-    console.error("Kiwify: buyer email not found");
-
-    return json(400, {
-      ok: false,
-      error: "Customer.email not found"
-    });
+const rawBody = event.body || "";
   }
 
   let status = null;
