@@ -2680,45 +2680,6 @@ body.arqflow-locked>.app{visibility:hidden!important}body.arqflow-locked #toast{
     if(error){console.error(error);throw new Error('Não foi possível verificar a licença.');}
     return data === true;
   }
-  async function unlockIfLicensed(){
-    const {data:{session}}=await sb.auth.getSession();
-    if(!session) return false;
-    const email=(session.user.email||'').trim().toLowerCase();
-    if(!email) return false;
-    try{
-      if(!(await hasActiveLicense(email))){
-        await sb.auth.signOut();
-        message('Este e-mail não possui uma licença ARQFLOW ativa.','error');
-        return false;
-      }
-    }catch(e){message(e.message||'Erro ao verificar acesso.','error');return false;}
-    overlay.style.display='none';
-    document.body.classList.remove('arqflow-locked');
-    window.ARQFLOW_AUTH={email};
-    if(!document.getElementById('arqflow-logout')){const b=document.createElement('button');b.id='arqflow-logout';b.textContent='Sair';b.title='Sair do ARQFLOW';b.style.cssText='position:fixed;right:18px;bottom:18px;z-index:99998;border:1px solid #ddd6cc;background:#fff;color:#171717;border-radius:9px;padding:8px 12px;font:600 12px Montserrat,Arial;box-shadow:0 4px 16px rgba(0,0,0,.06);cursor:pointer';b.onclick=()=>sb.auth.signOut();document.body.appendChild(b);}
-    return true;
-  }
-  form.addEventListener('submit',async function(ev){
-    ev.preventDefault();
-    const email=emailInput.value.trim().toLowerCase();
-    if(!email) return;
-    submit.disabled=true;submit.textContent='Enviando...';message('');
-    try{
-      const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
-      if(error) throw error;
-      message('Link enviado! Abra o e-mail e clique em “Sign in”. Depois você voltará ao ARQFLOW.','ok');
-    }catch(e){console.error(e);message(e.message||'Não foi possível enviar o acesso.','error');}
-    finally{submit.disabled=false;submit.textContent='Enviar link de acesso';}
-  });
-  sb.auth.onAuthStateChange(function(event){
-    if(event==='SIGNED_IN') unlockIfLicensed();
-    if(event==='SIGNED_OUT'){overlay.style.display='flex';document.body.classList.add('arqflow-locked');}
-  });
-  unlockIfLicensed();
-})();
-</script>
-
-
 <div class="app">
 <aside class="sidebar">
   <div class="brand"><strong>ARQ</strong><span>FLOW</span></div>
