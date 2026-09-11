@@ -564,7 +564,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--arq-pink);box-shadow:
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='arqflow_totalmente_zerado_v1';
+const KEY='arqflow_totalmente_zerado_v2';
 const baseInteriorService={
  id:'base-interiores',
  name:'Projeto de Interiores',
@@ -680,7 +680,7 @@ function pricing(){
    <div style="color:#6F6E68;font-size:13px;line-height:1.6;margin-top:8px">Valor/hora recomendado para sua precificação.</div>
  </div></div>`;
 }
-function field(id,label,type,value,full=false){return `<div class="field ${full?'full':''}"><label>${label}</label><input id="${id}" type="${type}" value="${value??''}" step="${type==='number'?'0.01':'1'}"></div>`}
+function field(id,label,type,value,full=false){const v=(value===0||value===null||value===undefined)?'':value;return `<div class="field ${full?'full':''}"><label>${label}</label><input id="${id}" type="${type}" value="${v}" placeholder="${type==='number'?'0':''}" step="${type==='number'?'0.01':'1'}"></div>`}
 function services(){
  return pageHeader('Catálogo','Meus Serviços','Cadastre serviços e divida cada um em etapas reutilizáveis.','<button class="btn btn-dark" id="newService">＋ Novo serviço</button>')+
  `<div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,#F3F6F0,#F8F4EE);border-color:#E3E7DF"><div class="eyebrow" style="color:#788A72">REFERÊNCIA INICIAL</div><div style="font-size:13px;font-weight:700;margin-top:6px">Projeto de Interiores já cadastrado</div><div class="note" style="margin-top:5px">Use as etapas e horas-base como ponto de partida. Ajuste conforme o porte, escopo e realidade do seu escritório.</div></div>`+
@@ -779,7 +779,7 @@ function bind(){
  document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));
  const sp=document.getElementById('savePricing'); if(sp)sp.onclick=()=>{['prolabore','fixed','variable','hours','productive','tax','margin'].forEach(k=>state.pricing[k]=+document.getElementById(k).value||0);state.pricing.hourly=calcPricing().final;save();toast('Precificação salva.');render('pricing')};
   const pricingFields=['prolabore','fixed','variable','hours','productive','tax','margin'];
-  pricingFields.forEach(k=>{const el=document.getElementById(k);if(el)el.oninput=()=>{const temp={};pricingFields.forEach(x=>{const input=document.getElementById(x);temp[x]=input&&input.value!==''?Number(input.value):0});const result=calcPricing(temp);const out=document.getElementById('pricingResult');if(out)out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';};});
+  pricingFields.forEach(k=>{const el=document.getElementById(k);if(!el)return;el.addEventListener('focus',()=>{if(el.value==='0')el.value='';});el.addEventListener('input',()=>{const temp={};pricingFields.forEach(x=>{const input=document.getElementById(x);temp[x]=input&&input.value.trim()!==''?Number(input.value):0});const result=calcPricing(temp);const out=document.getElementById('pricingResult');if(out)out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';});el.addEventListener('blur',()=>{if(el.value.trim()==='')el.value='';});});
   const firstPricingInput=document.getElementById('prolabore'); if(firstPricingInput) firstPricingInput.dispatchEvent(new Event('input'));
  const ns=document.getElementById('newService');if(ns)ns.onclick=()=>serviceModal();
  document.querySelectorAll('.editService').forEach(b=>b.onclick=()=>serviceModal(b.dataset.id));
