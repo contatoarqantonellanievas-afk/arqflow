@@ -22,43 +22,6 @@ exports.handler = async (event) => {
 
   const rawBody = event.body || "";
 
-  // Kiwify envia a assinatura na query string.
-  // Validação temporariamente desativada para teste.
-
-  if (!signature) {
-    console.error("Kiwify: signature not found");
-
-    return json(401, {
-      ok: false,
-      error: "Signature not found"
-    });
-  }
-
-  // Validação HMAC-SHA1 da Kiwify.
-  const expectedSignature = crypto
-    .createHmac("sha1", token)
-    .update(rawBody, "utf8")
-    .digest("hex");
-
-  const received = String(signature).trim().toLowerCase();
-
-  if (
-    received.length !== expectedSignature.length ||
-    !crypto.timingSafeEqual(
-      Buffer.from(received),
-      Buffer.from(expectedSignature)
-    )
-  ) {
-    console.error("Kiwify: invalid signature");
-
-    return json(401, {
-      ok: false,
-      error: "Invalid signature"
-    });
-  }
-
-  let body;
-
   try {
     body = JSON.parse(rawBody);
   } catch {
