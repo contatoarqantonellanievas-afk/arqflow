@@ -24,45 +24,6 @@ const rawBody = event.body || "";
 
   let status = null;
 
-  // Compra aprovada
-  if (
-    eventType === "order_approved" ||
-    orderStatus === "paid"
-  ) {
-    status = "active";
-  }
-
-  // Reembolso / chargeback
-  if (
-    eventType === "order_refunded" ||
-    eventType === "order_refunded_partial" ||
-    eventType === "chargeback" ||
-    orderStatus === "refunded" ||
-    orderStatus === "chargeback"
-  ) {
-    status = "inactive";
-  }
-
-  // Boleto gerado, Pix gerado etc.
-  if (!status) {
-    console.log(
-      "Kiwify event ignored:",
-      eventType || orderStatus || "unknown"
-    );
-
-    return json(200, {
-      ok: true,
-      ignored: true,
-      event: eventType || orderStatus || "unknown"
-    });
-  }
-
-  const supabaseUrl =
-    (process.env.SUPABASE_URL || "").replace(/\/$/, "");
-
-  const supabaseKey =
-    (process.env.SUPABASE_SECRET_KEY || "").trim();
-
   if (!supabaseUrl || !supabaseKey) {
     console.error("Supabase variables missing");
 
