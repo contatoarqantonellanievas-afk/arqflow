@@ -47,100 +47,68 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px 8px
 #proposalPaper .paper-payment-row{padding:8px 12px}
 
 
-/* ===== PDF / IMPRESSÃO — FOLHA LIMPA E PROFISSIONAL ===== */
+/* ===== PDF / IMPRESSÃO — FOLHA A4 ===== */
 @media print{
-  @page{
-    size:A4 portrait;
-    margin:0;
-  }
-
+  @page{ size:A4 portrait; margin:0; }
   html,body{
-    margin:0!important;
-    padding:0!important;
-    width:210mm!important;
-    height:297mm!important;
-    background:#fff!important;
-    overflow:hidden!important;
+    margin:0!important;padding:0!important;width:210mm!important;min-height:297mm!important;
+    background:#fff!important;overflow:visible!important;
   }
-
-  body > .app,
-  body > .app > .main,
-  #main{
-    display:block!important;
-    width:210mm!important;
-    height:297mm!important;
-    min-height:297mm!important;
-    margin:0!important;
-    padding:0!important;
-    background:#fff!important;
-    overflow:hidden!important;
+  body > .app, body > .app > .main, #main{
+    display:block!important;width:210mm!important;min-height:297mm!important;height:auto!important;
+    margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important;
   }
-
-  body > .app > .sidebar,
-  .topbar,
-  .no-print,
-  .modal,
-  .toast{
-    display:none!important;
+  body > .app > .sidebar,.topbar,.no-print,.modal,.toast{display:none!important;}
+  #main > *{display:none!important;}
+  #main > .proposal,#proposalPaper{
+    display:block!important;position:relative!important;box-sizing:border-box!important;
+    width:210mm!important;min-width:210mm!important;max-width:210mm!important;
+    margin:0!important;padding:0!important;background:#fff!important;border:0!important;
+    border-radius:0!important;box-shadow:none!important;overflow:visible!important;
   }
-
-  /* Remove every child from the main area, then explicitly restore only
-     the actual proposal sheet. This guarantees the PDF never includes the
-     "Apresentação / Proposta Comercial" page heading. */
-  #main > *{
-    display:none!important;
-  }
-
-  #main > .proposal,
-  #proposalPaper{
-    display:block!important;
-    position:relative!important;
+  #proposalPaper .proposal-print-page{
     box-sizing:border-box!important;
-    width:210mm!important;
-    height:297mm!important;
-    min-width:210mm!important;
-    min-height:297mm!important;
-    max-width:210mm!important;
-    max-height:297mm!important;
-    margin:0!important;
-    padding:15mm 17mm!important;
-    background:#fff!important;
-    border:0!important;
-    border-radius:0!important;
-    box-shadow:none!important;
-    overflow:hidden!important;
-    page-break-before:avoid!important;
-    page-break-after:avoid!important;
-    page-break-inside:avoid!important;
-    break-before:avoid-page!important;
-    break-after:avoid-page!important;
-    break-inside:avoid!important;
+    width:210mm!important;height:297mm!important;min-height:297mm!important;
+    padding:15mm 17mm!important;margin:0!important;background:#fff!important;
+    overflow:hidden!important;position:relative!important;
+    page-break-after:always!important;break-after:page!important;
   }
-
+  #proposalPaper .proposal-print-page:last-child{
+    page-break-after:auto!important;break-after:auto!important;
+  }
   #proposalPaper .proposal-logo-wrap{
-    margin-bottom:8mm!important;
+    position:absolute!important;
+    top:15mm!important;
+    right:17mm!important;
+    width:68mm!important;
+    height:26mm!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:flex-end!important;
+    z-index:2!important;
   }
-
-  #proposalPaper .brandline{
-    margin-top:0!important;
+  #proposalPaper .proposal-logo-wrap img{
+    max-width:58mm!important;
+    max-height:22mm!important;
+    width:auto!important;
+    height:auto!important;
   }
-
-  #proposalPaper hr{
-    margin:7mm 0!important;
+  #proposalPaper .brandline{margin-top:0!important;}
+  #proposalPaper hr{margin:7mm 0!important;}
+  #proposalPaper h2{margin:5mm 0 1mm!important;}
+  #proposalPaper p{margin:4mm 0!important;}
+  #proposalPaper .proposal-grid{gap:18px!important;}
+  #proposalPaper .paper-payment-row{padding:7px 10px!important;break-inside:avoid!important;page-break-inside:avoid!important;}
+  #proposalPaper .proposal-print-page > *{
+    break-inside:avoid!important;page-break-inside:avoid!important;
   }
-
-  #proposalPaper h2{
-    margin:5mm 0 1mm!important;
-  }
-
-  #proposalPaper p{
-    margin:4mm 0!important;
-  }
-
-  #proposalPaper .paper-payment-row{
-    padding:7px 10px!important;
+  #proposalPaper .proposal-print-page-1 .paper-includes-section{position:relative!important;top:-6mm!important;}
+  #proposalPaper .paper-payment-option{
+    break-inside:avoid!important;page-break-inside:avoid!important;
   }
 }
+
 
 </style>
 <style id="nav-icons-refinement">
@@ -402,15 +370,15 @@ td{font-size:12px}
 
 <style id="proposal-logo-style">
 .proposal-logo-wrap{
-  height:70px;
+  height:50px;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-bottom:14px;
+  margin-bottom:8px;
 }
 .proposal-logo-wrap img{
-  max-width:190px;
-  max-height:62px;
+  max-width:170px;
+  max-height:44px;
   width:auto;
   height:auto;
   object-fit:contain;
@@ -438,7 +406,7 @@ td{font-size:12px}
 </style>
 
 <style id="payment-plan-refinement">
-.payment-plan-box{background:#FAFAF8;border:1px solid #E9E9E4;border-radius:14px;padding:10px}.installment-row{display:grid;grid-template-columns:28px minmax(170px,1fr) 130px 135px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #EEEDE8}.installment-number{display:flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;background:#E8EEE4;color:#52634E;font-size:10px;font-weight:800}.installment-row input{border:1px solid #E5E4DE;background:#fff;border-radius:9px;padding:10px;font-size:11px;min-width:0}.plan-summary{padding:12px 2px 2px;text-align:right;font-size:10px;color:#73766E}.plan-ok{color:#52634E;font-weight:700}.plan-warning{color:#936553;font-weight:700}.paper-payment-plan{display:grid;gap:8px}.paper-payment-row{display:grid;grid-template-columns:1fr auto;gap:5px 15px;padding:10px 0;border-bottom:1px solid #EEEDE8;font-size:13px}.paper-payment-row small{grid-column:1/-1;color:#858680;font-size:10px}.payment-context{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#F5F7F2;border:1px solid #E5E9E1;border-radius:12px;padding:13px;margin-bottom:15px}.payment-context span{display:block;font-size:9px;color:#858680;text-transform:uppercase}.payment-context strong{display:block;margin-top:5px;font-size:12px}.payment-note{margin-top:12px;padding:10px;background:#FAFAF8;border-radius:10px}@media(max-width:700px){.installment-row{grid-template-columns:28px 1fr}.installment-row input,.installment-row button{grid-column:2}.payment-context{grid-template-columns:1fr}}
+.payment-plan-box{background:#FAFAF8;border:1px solid #E9E9E4;border-radius:14px;padding:10px}.installment-row{display:grid;grid-template-columns:28px minmax(170px,1fr) 130px 135px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #EEEDE8}.installment-number{display:flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;background:#E8EEE4;color:#52634E;font-size:10px;font-weight:800}.installment-row input{border:1px solid #E5E4DE;background:#fff;border-radius:9px;padding:10px;font-size:11px;min-width:0}.plan-summary{padding:12px 2px 2px;text-align:right;font-size:10px;color:#73766E}.plan-ok{color:#52634E;font-weight:700}.plan-warning{color:#936553;font-weight:700}.paper-payment-plan{display:grid;gap:12px}.paper-payment-choice-note{margin:2px 0 10px;padding:10px 12px;border:1px solid #E5E7E1;background:#F7F8F5;border-radius:9px;font-size:10px;color:#666B62;line-height:1.5}.paper-payment-choice-label{display:flex;align-items:center;gap:7px;margin:2px 0 8px;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#7A7E76}.paper-payment-choice-label:before,.paper-payment-choice-label:after{content:'';height:1px;background:#E5E7E1;flex:1}.paper-payment-option{border:1px solid #DDDED8;border-radius:12px;background:#fff;padding:13px 14px}.paper-payment-option-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:9px;margin-bottom:2px;border-bottom:1px solid #EEEDE8}.paper-payment-option-title{font-size:12px;font-weight:800;color:#222522}.paper-payment-option-badge{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#65705F;background:#EEF2EA;border-radius:999px;padding:4px 7px;white-space:nowrap}.paper-payment-row{display:grid;grid-template-columns:1fr auto;gap:5px 15px;padding:10px 0;font-size:11.5px}.paper-payment-row + .paper-payment-row{border-top:1px solid #F0F0EC}.paper-payment-row small{grid-column:1/-1;color:#858680;font-size:10px}.paper-payment-total{display:flex;justify-content:space-between;gap:12px;margin-top:8px;padding-top:9px;border-top:1px solid #E7E7E2;font-size:10px;color:#777A72}.paper-payment-total strong{font-size:11px;color:#232621}.payment-context{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#F5F7F2;border:1px solid #E5E9E1;border-radius:12px;padding:13px;margin-bottom:15px}.payment-context span{display:block;font-size:9px;color:#858680;text-transform:uppercase}.payment-context strong{display:block;margin-top:5px;font-size:12px}.payment-note{margin-top:12px;padding:10px;background:#FAFAF8;border-radius:10px}@media(max-width:700px){.installment-row{grid-template-columns:28px 1fr}.installment-row input,.installment-row button{grid-column:2}.payment-context{grid-template-columns:1fr}.paper-payment-option-head{align-items:flex-start;flex-direction:column}.paper-payment-choice-label:before,.paper-payment-choice-label:after{min-width:20px}}
 </style>
 
 <style id="arqflow-minimal-icons">
@@ -542,23 +510,63 @@ input:focus,select:focus,textarea:focus{border-color:var(--arq-pink);box-shadow:
 .pricing-form > .tax-field .field{
   margin-bottom:10px!important;
 }
+@media(max-width:700px){.value-reference-grid{grid-template-columns:1fr!important}}
 </style>
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1636395568192908');
-fbq('track', 'PageView');
-</script>
-<noscript>
-<img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1636395568192908&ev=PageView&noscript=1"/>
-</noscript>
+<style id="proposal-preview-modal">
+.preview-overlay{position:fixed;inset:0;background:rgba(18,20,18,.72);z-index:1200;display:none;align-items:center;justify-content:center;padding:24px}
+.preview-overlay.open{display:flex}
+.preview-dialog{width:min(1200px,96vw);height:min(94vh,1100px);background:#EEEDE8;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.28)}
+.preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#fff;border-bottom:1px solid #DDDAD2;flex:0 0 auto}
+.preview-toolbar strong{font-size:13px}.preview-toolbar .actions{margin:0;display:flex;gap:8px;align-items:center}
+.preview-stage{flex:1;overflow:auto;padding:24px;display:flex;flex-direction:column;align-items:center;gap:24px;background:#E9E7E1}
+.preview-sheet{width:210mm;min-height:297mm;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.13);position:relative;overflow:hidden;flex:0 0 auto}
+.preview-sheet .proposal-print-page{width:210mm!important;min-height:297mm!important;height:297mm!important;box-sizing:border-box;padding:16mm 16mm 14mm!important;background:#fff!important;position:relative!important;overflow:hidden!important}
+.preview-sheet .proposal-print-page-1{break-after:page}
+@media(max-width:900px){.preview-overlay{padding:10px}.preview-dialog{width:100%;height:96vh}.preview-stage{padding:12px}}
+</style>
+
+<style id="proposal-pdf-final-fix">
+@media print{
+  @page{size:A4 portrait;margin:0!important;}
+  html,body{width:210mm!important;min-width:210mm!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;background:#fff!important;}
+  body>.app,body>.app>.main,#main{display:block!important;width:210mm!important;min-width:210mm!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;background:#fff!important;}
+  #main>.proposal,#proposalPaper{width:210mm!important;min-width:210mm!important;max-width:none!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
+  #proposalPaper .proposal-print-page{width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;box-sizing:border-box!important;margin:0!important;padding:12mm 14mm 11mm!important;overflow:hidden!important;position:relative!important;page-break-after:always!important;break-after:page!important;}
+  #proposalPaper .proposal-print-page:last-child{page-break-after:auto!important;break-after:auto!important;}
+  #proposalPaper .proposal-print-page-1{font-size:10.5px!important;}
+  #proposalPaper .proposal-print-page-1 .brandline{font-size:12px!important;}
+  #proposalPaper .proposal-print-page-1 h2{font-size:28px!important;line-height:1.08!important;margin:4mm 0 1mm!important;}
+  #proposalPaper .proposal-print-page-1 hr{margin:4.5mm 0!important;}
+  #proposalPaper .proposal-print-page-1 p{font-size:10.5px!important;line-height:1.48!important;margin:2.5mm 0!important;}
+  #proposalPaper .proposal-print-page-1 .proposal-grid{gap:12mm!important;}
+  #proposalPaper .proposal-print-page-1 .paper-includes-section>div[style*="display:grid"]{gap:7px!important;}
+  #proposalPaper .proposal-print-page-1 .paper-includes-section{top:0!important;}
+  #proposalPaper .proposal-print-page-1 .proposal-logo-wrap{top:12mm!important;right:14mm!important;width:58mm!important;height:21mm!important;margin:0!important;}
+  #proposalPaper .proposal-print-page-1 .proposal-logo-wrap img{max-width:48mm!important;max-height:18mm!important;}
+  #proposalPaper .proposal-print-page-1 .paper-scope-item{break-inside:avoid!important;page-break-inside:avoid!important;}
+  #proposalPaper .proposal-print-page-2{font-size:10.5px!important;}
+  #proposalPaper .proposal-print-page-2 hr{margin:5mm 0!important;}
+  #proposalPaper .proposal-print-page-2 .amount{font-size:28px!important;line-height:1.05!important;}
+  #proposalPaper .proposal-print-page-2 p{font-size:10.5px!important;line-height:1.5!important;margin:2.5mm 0!important;}
+  #proposalPaper .paper-payment-plan{gap:7px!important;}
+  #proposalPaper .paper-payment-choice-note{padding:7px 9px!important;margin:1px 0 6px!important;font-size:9px!important;line-height:1.4!important;}
+  #proposalPaper .paper-payment-choice-label{font-size:8px!important;margin:2px 0 5px!important;}
+  #proposalPaper .paper-payment-option{padding:8px 10px!important;border-radius:9px!important;}
+  #proposalPaper .paper-payment-option-head{padding-bottom:6px!important;}
+  #proposalPaper .paper-payment-option-title{font-size:10px!important;}
+  #proposalPaper .paper-payment-option-badge{font-size:7px!important;padding:3px 6px!important;}
+  #proposalPaper .paper-payment-row{padding:6px 0!important;font-size:9.5px!important;gap:3px 10px!important;}
+  #proposalPaper .paper-payment-row small{font-size:8px!important;}
+  #proposalPaper .paper-payment-total{font-size:8.5px!important;margin-top:5px!important;padding-top:6px!important;}
+  #proposalPaper .paper-payment-total strong{font-size:9.5px!important;}
+  #proposalPaper .proposal-print-page-2 #paperBankWrap p,#proposalPaper .proposal-print-page-2 #paperNotes{font-size:9.5px!important;line-height:1.45!important;}
+  #proposalPaper .proposal-print-page-2 #paperIdentityFooter{font-size:9px!important;line-height:1.45!important;}
+  #proposalPaper .proposal-print-page-2>.muted:last-child{font-size:8.5px!important;}
+  #proposalPaper .proposal-print-page> *{break-inside:auto!important;page-break-inside:auto!important;}
+  #proposalPaper .paper-payment-row,#proposalPaper .paper-payment-option{break-inside:avoid!important;page-break-inside:avoid!important;}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -580,7 +588,9 @@ src="https://www.facebook.com/tr?id=1636395568192908&ev=PageView&noscript=1"/>
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='arqflow_release_v8_clean';
+const KEY='arqflow_release_v4';
+// Versão de entrega: inicia sempre limpa para um novo profissional.
+try{localStorage.removeItem(KEY);}catch(e){}
 const baseInteriorService={
  id:'base-interiores',
  name:'Projeto de Interiores',
@@ -601,6 +611,11 @@ const baseInteriorService={
 };
 baseInteriorService.hours=baseInteriorService.steps.reduce((a,b)=>a+b.hours,0);
 
+const defaultProposalScope=[
+ {name:'Conceito e layout',description:'Briefing, estudo de layout e direção estética.'},
+ {name:'Projeto e apresentação',description:'Modelagem 3D e apresentação dos ambientes.'},
+ {name:'Detalhamento e entrega',description:'Desenhos técnicos e especificação de materiais.'}
+];
 const defaultState={
  pricing:{prolabore:0,fixed:0,variable:0,hours:0,productive:0,tax:0,margin:0},
  services:[],
@@ -608,21 +623,34 @@ const defaultState={
  proposals:[],
  payments:[],
  paymentPlans:{},
- logo:''
+ logo:'',
+ proposalScopeTemplate:structuredClone(defaultProposalScope),
+ proposalIdentity:{architect:'',office:'',cau:'',address:''},
+ proposalTechnicalSupport:{enabled:false,value:0,description:''}
 };
 let state=load();
 state.pricing={...defaultState.pricing,...(state.pricing||{})};
-state.services=Array.isArray(state.services)&&state.services.length?state.services:[structuredClone(baseInteriorService)];
+state.services=Array.isArray(state.services)?state.services:[];
 state.budgets=Array.isArray(state.budgets)?state.budgets:[];
 state.proposals=Array.isArray(state.proposals)?state.proposals:[];
 state.payments=Array.isArray(state.payments)?state.payments:[];
 state.paymentPlans=state.paymentPlans&&typeof state.paymentPlans==='object'?state.paymentPlans:{};
+state.paymentOptions=state.paymentOptions&&typeof state.paymentOptions==='object'?state.paymentOptions:{};
+state.proposalScopeTemplate=Array.isArray(state.proposalScopeTemplate)&&state.proposalScopeTemplate.length
+ ? state.proposalScopeTemplate.map((x,i)=>({name:String(x?.name||`Etapa ${i+1}`),description:String(x?.description||'')}))
+ : structuredClone(defaultProposalScope);
+if(!state.proposalScopeTemplate.some(x=>x.name.trim()&&x.description.trim())) state.proposalScopeTemplate=structuredClone(defaultProposalScope);
+state.proposalIdentity={...defaultState.proposalIdentity,...(state.proposalIdentity||{})};
+state.proposalTechnicalSupport={...defaultState.proposalTechnicalSupport,...(state.proposalTechnicalSupport||{})};
+if(!state.proposalTechnicalSupport.description) state.proposalTechnicalSupport.description=defaultTechnicalSupportDescription();
+state.proposalScopeTemplate=state.proposalScopeTemplate.length?state.proposalScopeTemplate:structuredClone(defaultProposalScope);
 normalizeState();
 function load(){
  try{
   const saved=JSON.parse(localStorage.getItem(KEY)||'{}');
   const loaded={...defaultState,...saved};
-  loaded.services=Array.isArray(saved.services)&&saved.services.length?saved.services:[structuredClone(baseInteriorService)];
+  loaded.services=Array.isArray(saved.services)?saved.services:[...defaultState.services];
+  if(!loaded.services.some(s=>s.id==='base-interiores')) loaded.services=[baseInteriorService,...loaded.services];
   return loaded;
  }catch(e){return structuredClone(defaultState)}
 }
@@ -716,11 +744,18 @@ function getPaymentRows(){
  });
  return rows;
 }
+function getBudgetRange(b){
+ const saved=b?.range;
+ if(saved && typeof saved==='object' && [saved.min,saved.estimated,saved.max].every(v=>v!==undefined)) return {min:round2(saved.min),estimated:round2(saved.estimated),max:round2(saved.max)};
+ const pricing=calcPricing();
+ const hours=round2(b?.hours||0);
+ return {min:round2(hours*pricing.floor),estimated:round2(b?.value||hours*pricing.final),max:round2(hours*pricing.ceiling)};
+}
 
 
 function pricingField(id,label,value){
   const v=(value===0||value===null||value===undefined)?'':value;
-  return `<div class="field"><label>${esc(label)}</label><input id="${esc(id)}" type="text" value="${esc(v)}" placeholder="Digite seu valor" inputmode="decimal" autocomplete="off"></div>`;
+  return `<div class="field"><label>${esc(label)}</label><input id="${esc(id)}" type="number" value="${esc(v)}" placeholder="0" step="0.01" min="0" inputmode="decimal"></div>`;
 }
 
 function services(){
@@ -743,11 +778,15 @@ function normalizeState(){
     id:String(s.id||id()), name:String(s.name||'Serviço sem nome'),
     steps:(Array.isArray(s.steps)?s.steps:[]).map(e=>({name:String(e.name||''),hours:round2(e.hours)})).filter(e=>e.name)
   }));
+  if(!state.services.some(s=>s.id==='base-interiores')) state.services.unshift(baseInteriorService);
   state.services.forEach(s=>s.hours=round2(s.steps.reduce((a,e)=>a+parseNumber(e.hours),0)));
   state.budgets=(Array.isArray(state.budgets)?state.budgets:[]).map(b=>({...b,id:String(b.id||id()),value:round2(b.value),hours:round2(b.hours),client:String(b.client||''),project:String(b.project||''),service:String(b.service||''),status:String(b.status||'ENVIADO'),steps:Array.isArray(b.steps)?b.steps:[]}));
   state.proposals=Array.isArray(state.proposals)?state.proposals:[];
   state.payments=(Array.isArray(state.payments)?state.payments:[]).map(p=>({...p,amount:round2(p.amount)}));
   state.paymentPlans=state.paymentPlans&&typeof state.paymentPlans==='object'?state.paymentPlans:{};
+  state.proposalScopeTemplate=Array.isArray(state.proposalScopeTemplate)?state.proposalScopeTemplate.map(x=>({
+    name:String(x.name||''),description:String(x.description||''),deadline:String(x.deadline||''),conditions:String(x.conditions||'')
+  })).filter(x=>x.name||x.description||x.deadline||x.conditions):[];
 }
 
 function localDateISO(){
@@ -788,16 +827,16 @@ function pricing(){
  ${pricingField('tax','Impostos (%)',p.tax)}
  ${pricingField('margin','Margem desejada (%)',p.margin)}
  <div class="field-help"><strong>Margem desejada</strong><span>Define quanto você quer gerar de lucro depois de cobrir os custos e impostos.</span><div class="benchmark-tip"><b>Diretriz inicial: 20%</b><small>Use 20% como referência de partida. O Sebrae cita cerca de 20% sobre as vendas como expectativa de remuneração para atividades de serviços; benchmarks internacionais de arquitetura/engenharia reportam margem média próxima de 19,9%, com empresas do quartil superior chegando a 33%.</small></div></div>
- </div><div class="actions" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-dark" id="generatePricing">Gerar valor recomendado</button><button class="btn btn-olive" id="savePricing">Salvar precificação</button></div></div>
+ </div><div class="actions"><button class="btn btn-olive" id="savePricing">Salvar precificação</button></div></div>
  <div class="result" style="display:flex;flex-direction:column;justify-content:center;min-height:260px;text-align:center">
    <div class="eyebrow" style="color:#85837C">VALOR CALCULADO</div>
-   <div id="pricingResult" class="big" style="font-size:48px;margin-top:12px">${c.final>0?money(c.final):'—'}<span style="font-size:15px;font-weight:600"> / hora</span></div>
+   <div id="pricingResult" class="big" style="font-size:48px;margin-top:12px">${money(c.final)}<span style="font-size:15px;font-weight:600"> / hora</span></div>
    <div id="pricingMeta" style="color:#8D5D49;font-size:13px;line-height:1.6;margin-top:8px">${c.final>0?`${c.productiveHours.toFixed(1)}h faturáveis/mês · base ${money(c.before)}/h · após impostos ${money(c.afterTax)}/h`:'Preencha horas disponíveis e percentual produtivo para calcular o valor/hora.'}</div>
  </div></div>`;
 }
 function field(id,label,type,value,full=false){
  const v=(value===0||value===null||value===undefined)?'':value;
- return `<div class="field ${full?'full':''}"><label>${label}</label><input id="${id}" type="${type}" value="${esc(v)}" placeholder="${type==='number'?'':''}" step="${type==='number'?'0.01':'1'}" ${type==='number'?'inputmode="decimal"':''}></div>`
+ return `<div class="field ${full?'full':''}"><label>${label}</label><input id="${id}" type="${type}" value="${esc(v)}" placeholder="${type==='number'?'0':''}" step="${type==='number'?'0.01':'1'}" ${type==='number'?'inputmode="decimal"':''}></div>`
 }
 function budget(){
  const p=calcPricing(), chosen=state.budgets.length?state.budgets[state.budgets.length-1]:null;
@@ -806,9 +845,9 @@ function budget(){
  ${field('clientName','Cliente','text','')}
  ${field('project','Nome do projeto','text','')}
  <div class="field"><label>Serviço</label><select id="serviceSelect"><option value="">Selecione...</option>${state.services.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
- <div class="field"><label>Complexidade</label><select id="complexity"><option value="" selected>Selecione a complexidade...</option><option value="0.85">Baixa — 85%</option><option value="1">Média — 100%</option><option value="1.25">Alta — 125%</option><option value="1.5">Muito alta — 150%</option></select></div>
+ <div class="field"><label>Complexidade</label><select id="complexity"><option value="0.85">Baixa — 85%</option><option value="1" selected>Média — 100%</option><option value="1.25">Alta — 125%</option><option value="1.5">Muito alta — 150%</option></select></div>
  </div><div id="stepsBox" style="margin-top:20px"><div class="empty">Selecione um serviço para carregar as etapas.</div></div>
- <div class="actions"><button class="btn btn-light" id="recalculateBudget" type="button">Recalcular valor</button><button class="btn btn-dark" id="saveBudget">Salvar orçamento</button></div></div>
+ <div class="actions"><button class="btn btn-dark" id="saveBudget">Salvar orçamento</button></div></div>
  <div class="result">
  <div class="eyebrow" style="color:#788A72">FAIXA DE NEGOCIAÇÃO</div>
  <div class="big" id="budgetValue">${money(0)}</div>
@@ -825,15 +864,120 @@ function budget(){
 }
 let proposalSelectedBudgetId=null;
 
+function proposalDefaultScope(b,prop){
+ const saved=Array.isArray(prop?.scopeItems)?prop.scopeItems:[];
+ if(saved.length)return saved.map((x,i)=>({name:String(x.name||`Etapa ${i+1}`),description:String(x.description||'')}));
+ const template=Array.isArray(state.proposalScopeTemplate)?state.proposalScopeTemplate:[];
+ if(state.proposalScopeTemplateCustomized && template.length){
+   return template.map((x,i)=>({name:String(x.name||`Etapa ${i+1}`),description:String(x.description||'')}));
+ }
+ return structuredClone(defaultProposalScope);
+}
+function scopeRowHTML(x={},i=0){
+ return `<div class="scope-edit-row" style="border:1px solid #E9E8E3;border-radius:10px;padding:12px;background:#FCFCFA">
+   <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px"><strong style="font-size:12px;color:#5F625E">Etapa ${i+1}</strong><button type="button" class="btn btn-danger removeScope" style="padding:6px 9px;font-size:11px">Excluir etapa</button></div>
+   <div style="display:grid;grid-template-columns:1fr 1.7fr;gap:10px">
+    <div class="field"><label>Nome da etapa</label><input class="scope-name" type="text" value="${esc(x.name||'')}" placeholder="Ex.: Levantamento (Medição)"></div>
+    <div class="field"><label>Descrição do escopo</label><textarea class="scope-description" rows="2" placeholder="Descreva o que será realizado nesta etapa.">${esc(x.description||'')}</textarea></div>
+   </div>
+  </div>`;
+}
+function renderScopeEditor(items){
+ const list=(Array.isArray(items)&&items.length&&items.some(x=>String(x?.name||'').trim()))?items:structuredClone(defaultProposalScope);
+ return `<div id="scopeEditor" style="display:grid;gap:10px">
+   ${list.length?list.map((x,i)=>scopeRowHTML(x,i)).join(''):`<div id="scopeEmptyState" class="empty" style="margin:0;padding:18px">Nenhuma etapa adicionada ainda.<br><span style="font-size:11px">Clique em “Adicionar etapa do seu escopo” para incluir uma etapa.</span></div>`}
+   <button type="button" class="btn btn-light" id="addScopeStage">＋ Adicionar etapa do seu escopo</button>
+ </div>`;
+}
+function readScopeEditor(){
+ return [...document.querySelectorAll('#scopeEditor .scope-edit-row')].map(r=>({
+   name:r.querySelector('.scope-name')?.value.trim()||'',
+   description:r.querySelector('.scope-description')?.value.trim()||''
+ })).filter(x=>x.name||x.description);
+}
+function saveScopeTemplate(){
+ if(!document.getElementById('scopeEditor'))return;
+ const items=readScopeEditor();
+ state.proposalScopeTemplate=items.length?items:structuredClone(defaultProposalScope);
+ state.proposalScopeTemplateCustomized=true;
+ save();
+}
+function syncScopeTemplateAndPreview(){
+ saveScopeTemplate();
+ updateProposalPreview();
+}
+function addScopeStage(){
+ const editor=document.getElementById('scopeEditor');
+ if(!editor)return;
+ const empty=document.getElementById('scopeEmptyState');
+ if(empty)empty.remove();
+ const addButton=document.getElementById('addScopeStage');
+ const row=document.createElement('div');
+ row.innerHTML=scopeRowHTML({},editor.querySelectorAll('.scope-edit-row').length);
+ const node=row.firstElementChild;
+ if(node)editor.insertBefore(node,addButton);
+ renumberScopeStages();
+ bindScopeEditorEvents();
+ const input=node?.querySelector('.scope-name');
+ input?.focus();
+ saveScopeTemplate();
+ updateProposalPreview();
+}
+function renumberScopeStages(){
+ document.querySelectorAll('#scopeEditor .scope-edit-row').forEach((row,i)=>{
+   const label=row.querySelector('strong');
+   if(label)label.textContent=`Etapa ${i+1}`;
+ });
+}
+function bindScopeEditorEvents(){
+ const editor=document.getElementById('scopeEditor');
+ if(!editor)return;
+ if(editor.dataset.bound==='1')return;
+ editor.dataset.bound='1';
+ editor.addEventListener('input',()=>syncScopeTemplateAndPreview());
+ editor.addEventListener('change',()=>syncScopeTemplateAndPreview());
+ editor.addEventListener('click',e=>{
+   const add=e.target.closest('#addScopeStage');
+   if(add){addScopeStage();return;}
+   const remove=e.target.closest('.removeScope');
+   if(remove){
+     remove.closest('.scope-edit-row')?.remove();
+     renumberScopeStages();
+     if(!editor.querySelector('.scope-edit-row')){
+       const empty=document.createElement('div');
+       empty.id='scopeEmptyState';
+       empty.className='empty';
+       empty.style.cssText='margin:0;padding:18px';
+       empty.innerHTML='Nenhuma etapa adicionada ainda.<br><span style="font-size:11px">Clique em “Adicionar etapa do seu escopo” para montar a estrutura da proposta.</span>';
+       editor.insertBefore(empty,document.getElementById('addScopeStage'));
+     }
+     syncScopeTemplateAndPreview();
+   }
+ });
+}
+
+function defaultInclusos(){return 'Número de revisões permitidas em cada etapa, reuniões de alinhamento e acompanhamento básico.';}
+function defaultNaoInclusos(){return 'Custos de execução de obra, compras de materiais, taxas de órgãos públicos ou projetos complementares (como estrutural ou ar-condicionado complexo) se não combinados.';}
+function defaultTechnicalSupportDescription(){return 'Acompanhamento da execução da obra, garantindo que os serviços sigam o projeto e suas especificações.\n\nInclui suporte técnico, contato com fornecedores e prestadores, análise de orçamentos, acompanhamento de compras e auxílio na escolha de materiais e mobiliário.\n\nContratação mensal até a conclusão da obra ou encerramento pelo cliente.';}
+function proposalIdentityText(){
+ const x=state.proposalIdentity||{};
+ return [x.architect,x.office,x.cau?`CAU ${x.cau}`:'',x.address].filter(Boolean).join(' | ');
+}
+
 function proposal(){
  const selectedId=proposalSelectedBudgetId;
  const b=(selectedId && state.budgets.find(x=>x.id===selectedId)) || (state.budgets.length?state.budgets[state.budgets.length-1]:null);
  if(b) proposalSelectedBudgetId=b.id;
  if(!b)return pageHeader('Apresentação','Proposta Comercial','Transforme um orçamento salvo em uma apresentação profissional.')+`<div class="empty">Nenhum orçamento disponível. <button class="btn btn-dark" data-go="budget">Criar orçamento</button></div>`;
  const prop=state.proposals.find(x=>x.budgetId===b.id)||{};
- return pageHeader('Apresentação','Proposta Comercial','Personalize e gere a proposta baseada no orçamento selecionado.','<button class="btn btn-dark" id="printProposal">Salvar / gerar PDF</button>')+
+ return pageHeader('Apresentação','Proposta Comercial','Personalize e gere a proposta baseada no orçamento selecionado.','')+
  `<div class="card no-print" style="margin-bottom:18px"><div class="eyebrow" style="color:#788A72">IDENTIDADE VISUAL</div><div style="font-size:13px;font-weight:700;margin-top:6px">Logo do escritório</div><div class="note" style="margin:5px 0 12px">Envie seu logo em PNG. Ele aparecerá de forma discreta e elegante no cabeçalho da proposta comercial.</div><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><input id="logoFile" type="file" accept="image/png" style="max-width:100%;font-size:12px"><button class="btn btn-light" type="button" id="removeLogo">Remover logo</button><span id="logoStatus" class="muted" style="font-size:11px">${state.logo?'Logo carregado':'Nenhum logo carregado'}</span></div></div>`+
  `<div class="card no-print" style="margin-bottom:18px"><div class="form">
+ ${field('propArchitect','Nome do arquiteto','text',state.proposalIdentity.architect||'')}
+ ${field('propOffice','Nome do escritório','text',state.proposalIdentity.office||'')}
+ ${field('propCAU','CAU','text',state.proposalIdentity.cau||'')}
+ ${field('propAddress','Endereço comercial (opcional)','text',state.proposalIdentity.address||'')}
+ <div class="field full"><div class="note">Esses dados ficam salvos automaticamente e aparecem no rodapé das próximas propostas.</div></div>
  <div class="field"><label>Orçamento</label><select id="proposalBudget">${state.budgets.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(x.client)} — ${esc(x.service)} — ${money(x.value)}</option>`).join('')}</select></div>
  ${field('propDate','Data de envio','date',prop.date||localDateISO())}
  ${field('propValidity','Validade (dias)','number',prop.validity||10)}
@@ -842,17 +986,37 @@ function proposal(){
  ${field('propEmail','E-mail','email',prop.email||'')}
  ${field('propPhone','Telefone','text',prop.phone||'')}
  ${field('propIntro','Mensagem inicial','text',prop.intro||'Será um prazer desenvolver este projeto com você. Esta proposta apresenta o escopo, as etapas e as condições comerciais para a realização do serviço.',true)}
- <div class="field full"><label>Condições de pagamento</label><div id="paymentPlanBox" class="payment-plan-box"></div><button type="button" class="btn btn-light" id="addInstallment" style="margin-top:8px">＋ Adicionar parcela</button></div>
+ <div class="field full"><label>Escopo do projeto</label><div class="note" style="margin:5px 0 10px">Este é o escopo base da proposta. Altere as etapas e descrições conforme o serviço, exclua o que não fizer sentido ou adicione novas etapas. O modelo fica salvo automaticamente para as próximas propostas.</div>${renderScopeEditor(proposalDefaultScope(b,prop))}</div>
+ <div class="field full"><label>Acompanhamento técnico</label><div style="display:flex;align-items:center;gap:10px;margin:7px 0 10px"><label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;cursor:pointer"><input type="checkbox" id="propTechnicalEnabled" ${((prop.technicalSupport?.enabled ?? state.proposalTechnicalSupport.enabled)?'checked':'')}> Incluir acompanhamento técnico na proposta</label></div><div id="technicalSupportEditor" style="display:${((prop.technicalSupport?.enabled ?? state.proposalTechnicalSupport.enabled)?'grid':'none')};gap:10px"><div class="field"><label>Valor mensal</label><input id="propTechnicalValue" type="number" min="0" step="0.01" value="${esc(prop.technicalSupport?.value ?? state.proposalTechnicalSupport.value ?? 0)}" placeholder="0"></div><div class="field"><label>O que é o acompanhamento técnico?</label><textarea id="propTechnicalDescription" rows="7" placeholder="Explique o serviço...">${esc(prop.technicalSupport?.description || state.proposalTechnicalSupport.description || defaultTechnicalSupportDescription())}</textarea></div></div></div>
+ ${field('propInclusos','Inclusos','text',prop.inclusos||defaultInclusos(),true)}
+ ${field('propNaoInclusos','Exclusivos / Não inclusos','text',prop.naoInclusos||defaultNaoInclusos(),true)}
+ <div class="field full"><label>Valor total da proposta</label><div class="value-reference-grid" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:12px;align-items:stretch"><input id="propValue" type="number" value="${esc(prop.totalValue??b.value)}" placeholder="0" step="0.01" inputmode="decimal" style="font-size:15px;font-weight:700;min-width:0"><div style="border:1px solid #E9E9E4;border-radius:11px;background:#F7F7F4;padding:10px 12px;min-width:0"><div style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#777970;margin-bottom:7px">Referência do orçamento</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div><div style="font-size:10px;color:#858680">Mínimo</div><strong id="budgetRefMin" style="font-size:12px">${money(getBudgetRange(b).min)}</strong></div><div><div style="font-size:10px;color:#858680">Estimado</div><strong id="budgetRefEstimated" style="font-size:12px">${money(getBudgetRange(b).estimated)}</strong></div><div><div style="font-size:10px;color:#858680">Máximo</div><strong id="budgetRefMax" style="font-size:12px">${money(getBudgetRange(b).max)}</strong></div></div><div style="font-size:10px;color:#858680;margin-top:7px">Use esta faixa como referência ao definir o valor final da proposta.</div></div></div></div>
+ ${field('propBank','Dados bancários / instruções de pagamento','text',prop.bankDetails||'',true)}
+ <div class="field full"><label>Condições de pagamento</label><div class="note" style="margin:5px 0 10px">A primeira opção é à vista. Adicione outras opções de pagamento caso queira oferecer alternativas ao cliente.</div><div id="paymentOptionsBox"></div><button type="button" class="btn btn-light" id="addPaymentOption" style="margin-top:10px">＋ Adicionar outra opção de pagamento</button></div>
  ${field('propNotes','Condições especiais / observações','text',prop.notes||'',true)}
- </div><div class="actions"><button class="btn btn-olive" id="saveProposal">Salvar proposta</button></div></div>
- <div class="proposal" id="proposalPaper"><div class="proposal-logo-wrap" id="proposalLogoWrap" style="${state.logo?'':'display:none'}"><img id="proposalLogo" src="${state.logo||''}" alt="Logo do escritório"></div><div class="brandline">ARQFLOW</div><div class="muted" style="font-size:11px;margin-top:5px">PROPOSTA COMERCIAL</div>
+ </div><div class="actions"><button class="btn btn-olive" id="saveProposal">Salvar / Gerar PDF</button></div></div>
+ <div class="proposal" id="proposalPaper"><div class="proposal-print-page proposal-print-page-1"><div class="proposal-logo-wrap" id="proposalLogoWrap" style="${state.logo?'':'display:none'}"><img id="proposalLogo" src="${state.logo||''}" alt="Logo do escritório"></div><div class="brandline">ARQFLOW</div><div class="muted" style="font-size:11px;margin-top:5px">PROPOSTA COMERCIAL</div>
 <h2 id="paperTitle">${esc(prop.title||'Proposta Comercial')}</h2><div class="muted" id="paperDate">${dateBR(prop.date||localDateISO())}</div>
- <hr><div class="proposal-grid"><div><div class="eyebrow">CLIENTE</div><p id="paperName">${esc(prop.name||b.client)}</p><p class="muted" id="paperContact">${esc(prop.email||'')} ${prop.phone?' · '+esc(prop.phone):''}</p></div><div><div class="eyebrow">SERVIÇO</div><p>${esc(b.service)}</p><p class="muted">Projeto: ${esc(b.project||'—')} · ${b.hours.toFixed(1)} horas estimadas</p></div></div>
+ <hr><div class="proposal-grid"><div><div class="eyebrow">CLIENTE</div><p id="paperName">${esc(prop.name||b.client)}</p><p class="muted" id="paperContact">${esc(prop.email||'')} ${prop.phone?' · '+esc(prop.phone):''}</p></div><div><div class="eyebrow">SERVIÇO</div><p>${esc(b.service)}</p><p class="muted">Projeto: ${esc(b.project||'—')}</p></div></div>
  <hr><div class="eyebrow">APRESENTAÇÃO</div><p id="paperIntro" style="line-height:1.7">${esc(prop.intro||'Será um prazer desenvolver este projeto com você. Esta proposta apresenta o escopo, as etapas e as condições comerciais para a realização do serviço.')}</p>
- <hr><div class="eyebrow">INVESTIMENTO</div><div class="amount">${money(b.value)}</div><p class="muted">Validade: <span id="paperValidity">${prop.validity||10}</span> dias</p>
- <hr><div class="eyebrow">CONDIÇÕES DE PAGAMENTO</div><div id="paperPayment" class="paper-payment-plan"></div>
+ <hr><div class="eyebrow">ESCOPO DO PROJETO</div><div id="paperScope" style="margin-top:10px"></div>
+ <div id="paperTechnicalWrap" style="display:none"><hr><div class="eyebrow">ACOMPANHAMENTO TÉCNICO</div><div style="margin-top:10px"><div style="font-size:11px;color:#777970;margin-bottom:4px">VALOR MENSAL</div><div id="paperTechnicalValue" style="font-size:18px;font-weight:800;margin-bottom:10px"></div><div id="paperTechnicalDescription" style="font-size:12px;line-height:1.75;color:#41433F;white-space:pre-line"></div></div></div>
+ <div class="paper-includes-section"><hr><div class="eyebrow">O QUE ESTÁ E O QUE NÃO ESTÁ INCLUSO</div><div style="display:grid;gap:12px;margin-top:10px"><div><strong style="font-size:12px">Inclusos</strong><p id="paperInclusos" style="line-height:1.7;margin-top:5px">${esc(prop.inclusos||defaultInclusos())}</p></div><div><strong style="font-size:12px">Exclusivos / Não inclusos</strong><p id="paperNaoInclusos" style="line-height:1.7;margin-top:5px">${esc(prop.naoInclusos||defaultNaoInclusos())}</p></div></div></div>
+ </div><div class="proposal-print-page proposal-print-page-2"><hr><div class="eyebrow">INVESTIMENTO E CONDIÇÕES DE PAGAMENTO</div><div class="amount" id="paperValue">${money(prop.totalValue??b.value)}</div><p class="muted">Validade: <span id="paperValidity">${prop.validity||10}</span> dias</p><div id="paperPayment" class="paper-payment-plan" style="margin-top:12px"></div><div id="paperBankWrap" style="${prop.bankDetails?'':'display:none'};margin-top:12px"><strong style="font-size:12px">Dados bancários / instruções de pagamento</strong><p id="paperBank" style="line-height:1.7;margin-top:5px">${esc(prop.bankDetails||'')}</p></div>
  <div id="paperNotesWrap" style="${prop.notes?'':'display:none'}"><hr><div class="eyebrow">OBSERVAÇÕES</div><p id="paperNotes" style="line-height:1.7">${esc(prop.notes||'')}</p></div>
- <hr><div class="muted" style="font-size:11px">Documento gerado pelo ARQFLOW · Precificação inteligente para projetos mais lucrativos.</div></div>`;
+ <hr><div id="paperIdentityFooter" style="text-align:center;font-size:11px;line-height:1.6;color:#5f625e;font-weight:600">${esc(proposalIdentityText())}</div><div class="muted" style="font-size:11px;margin-top:7px;text-align:center">Documento gerado pelo ARQFLOW · Precificação inteligente para projetos mais lucrativos.</div></div></div>
+<div class="preview-overlay" id="proposalPreviewModal" aria-hidden="true">
+  <div class="preview-dialog" role="dialog" aria-modal="true" aria-labelledby="proposalPreviewTitle">
+    <div class="preview-toolbar">
+      <strong id="proposalPreviewTitle">Pré-visualização da proposta</strong>
+      <div class="actions">
+        <button type="button" class="btn btn-light" id="closeProposalPreview">Fechar</button>
+        <button type="button" class="btn btn-dark" id="previewPrintProposal">Salvar / gerar PDF</button>
+      </div>
+    </div>
+    <div class="preview-stage" id="proposalPreviewStage"></div>
+  </div>
+</div>`;
 }
 function control(){
  const bs=state.budgets;
@@ -866,8 +1030,8 @@ function control(){
    <div class="card kpi"><div class="label">APROVADOS</div><div class="value">${money(approved)}</div><div class="sub">${bs.filter(b=>b.status==='APROVADO').length} projeto(s)</div></div>
    <div class="card kpi"><div class="label">A RECEBER</div><div class="value">${money(totals.receivable)}</div><div class="sub">Saldo das parcelas abertas</div></div>
  </div>
- <div class="section-title"><h3>Orçamentos</h3></div><div class="card">${bs.length?`<table><thead><tr><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>${bs.map(b=>`<tr><td><strong>${esc(b.client)}</strong><div class="muted" style="font-size:9px;margin-top:3px">${esc(b.project||'—')}</div></td><td>${esc(b.service)}</td><td>${money(b.value)}</td><td><select class="statusSelect" data-id="${b.id}">${['ENVIADO','EM NEGOCIAÇÃO','APROVADO','PERDIDO'].map(s=>`<option ${s===b.status?'selected':''}>${s}</option>`).join('')}</select></td><td><button class="btn btn-light addPayment" data-id="${b.id}">＋ Recebimento</button></td></tr>`).join('')}</tbody></table>`:`<div class="empty">Nenhum orçamento cadastrado.</div>`}</div>
- <div class="section-title"><h3>Contas a receber</h3><span>Controle derivado do plano de pagamento dos orçamentos</span></div>
+ <div class="section-title"><h3>Orçamentos</h3></div><div class="card">${bs.length?`<table><thead><tr><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th></tr></thead><tbody>${bs.map(b=>`<tr><td><strong>${esc(b.client)}</strong><div class="muted" style="font-size:9px;margin-top:3px">${esc(b.project||'—')}</div></td><td>${esc(b.service)}</td><td>${money(b.value)}</td><td><select class="statusSelect" data-id="${b.id}">${['ENVIADO','EM NEGOCIAÇÃO','APROVADO','PERDIDO'].map(s=>`<option ${s===b.status?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table>`:`<div class="empty">Nenhum orçamento cadastrado.</div>`}</div>
+ <div class="section-title"><h3>Contas a receber</h3><span>Todos os registros de recebimento ficam concentrados aqui.</span></div>
  <div class="grid kpis finance-kpis">
    <div class="card kpi"><div class="label">A RECEBER</div><div class="value">${money(totals.receivable)}</div><div class="sub">Em aberto + vencido</div></div>
    <div class="card kpi"><div class="label">RECEBIDO</div><div class="value">${money(totals.received)}</div><div class="sub">Recebimentos registrados</div></div>
@@ -900,64 +1064,66 @@ function bind(){
  const pricingFields=['prolabore','fixed','variable','hours','productive','tax','margin'];
  const readPricingFields=()=>{
    const next={...state.pricing};
-   pricingFields.forEach(k=>{const el=document.getElementById(k);next[k]=el?parseNumber(el.value):0;});
+   pricingFields.forEach(k=>{const el=document.getElementById(k);next[k]=el?parseNumber(el.value):parseNumber(next[k]);});
    return next;
  };
- const renderPricingResult=(result,generated=false)=>{
+ const renderPricingResult=(result)=>{
    const out=document.getElementById('pricingResult');
    const meta=document.getElementById('pricingMeta');
    if(!out)return;
-   if(!generated){
-     out.innerHTML='—<span style="font-size:15px;font-weight:600"> / hora</span>';
-     if(meta) meta.textContent='Preencha os campos e clique em “Gerar valor recomendado” para calcular.';
-     return;
-   }
-   if(result.final>0){
-     out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';
-     if(meta){meta.textContent=`${result.productiveHours.toFixed(1)}h faturáveis/mês · base ${money(result.before)}/h · após impostos ${money(result.afterTax)}/h`;meta.style.color='#6F6E68';}
-   }else{
-     out.innerHTML='—<span style="font-size:15px;font-weight:600"> / hora</span>';
-     if(meta){meta.textContent='Verifique os dados informados para gerar um valor válido.';meta.style.color='#8D5D49';}
+   out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';
+   if(meta){
+     meta.textContent=result.final>0?`${result.productiveHours.toFixed(1)}h faturáveis/mês · base ${money(result.before)}/h · após impostos ${money(result.afterTax)}/h`:'Preencha horas disponíveis e percentual produtivo para calcular o valor/hora.';
+     meta.style.color=result.final>0?'#6F6E68':'#8D5D49';
    }
  };
- const refreshPricing=({persist=false,generated=false}={})=>{
+ const refreshPricing=({persist=true}={})=>{
    const temp=readPricingFields(),result=calcPricing(temp);
-   renderPricingResult(result,generated);
+   renderPricingResult(result);
    if(persist){state.pricing={...state.pricing,...temp,hourly:result.final};save();}
    return {temp,result};
  };
- const gp=document.getElementById('generatePricing');
- if(gp)gp.onclick=()=>{
-   const {temp,result}=refreshPricing({generated:true});
-   if(result.final<=0){toast('Preencha todos os campos com valores válidos para gerar o valor recomendado.');return;}
-   // O valor gerado passa a valer imediatamente para os demais módulos,
-   // sem precisar salvar no armazenamento. O botão Salvar continua sendo
-   // o responsável por persistir a precificação para a próxima abertura.
-   state.pricing={...state.pricing,...temp,hourly:result.final};
-   toast('Valor recomendado gerado. O Novo Orçamento já pode usar este valor.');
- };
+ pricingFields.forEach(k=>{
+   const el=document.getElementById(k);if(!el)return;
+   el.addEventListener('focus',()=>{if(el.value==='0')el.value='';});
+   el.addEventListener('input',()=>refreshPricing());
+   el.addEventListener('change',()=>refreshPricing());
+   el.addEventListener('blur',()=>{if(el.value.trim()==='')el.value='';else{el.value=String(parseNumber(el.value));refreshPricing();}});
+ });
  const sp=document.getElementById('savePricing');
- if(sp)sp.onclick=()=>{
-   const {result}=refreshPricing({persist:true,generated:true});
-   if(result.final<=0){toast('Gere um valor válido antes de salvar a precificação.');return;}
-   toast('Precificação salva.');
- };
- const firstPricingInput=document.getElementById('prolabore');
- if(firstPricingInput)renderPricingResult(calcPricing(readPricingFields()),false);
+ if(sp)sp.onclick=()=>{const {result}=refreshPricing();if(result.final<=0)return toast('Preencha horas disponíveis e percentual produtivo para salvar uma precificação válida.');toast('Precificação salva.');render('pricing');};
+ const firstPricingInput=document.getElementById('prolabore');if(firstPricingInput)refreshPricing({persist:false});
  const ns=document.getElementById('newService');if(ns)ns.onclick=()=>serviceModal();
  document.querySelectorAll('.editService').forEach(b=>b.onclick=()=>serviceModal(b.dataset.id));
  document.querySelectorAll('.deleteService').forEach(b=>b.onclick=()=>{if(confirm('Excluir este serviço?')){state.services=state.services.filter(s=>s.id!==b.dataset.id);save();render('services')}})
  const ss=document.getElementById('serviceSelect');if(ss){ss.onchange=loadSteps;document.getElementById('complexity').onchange=updateBudgetPreview}
  const sb=document.getElementById('saveBudget');if(sb)sb.onclick=saveBudget;
- const rb=document.getElementById('recalculateBudget');if(rb)rb.onclick=updateBudgetPreview;
- const pb=document.getElementById('proposalBudget');if(pb)pb.onchange=()=>{proposalSelectedBudgetId=pb.value;render('proposal')};
+ const pb=document.getElementById('proposalBudget');if(pb)pb.onchange=()=>{proposalSelectedBudgetId=pb.value;paymentOptionActive=0;render('proposal')};
   const ap=document.getElementById('addInstallment');if(ap)ap.onclick=addInstallment;renderPaymentPlan();
  const sv=document.getElementById('saveProposal');if(sv)sv.onclick=saveProposal;
-  bindProposalLiveUpdate();
- const pr=document.getElementById('printProposal');if(pr)pr.onclick=()=>{
+  renderPaymentOptions();
+ bindProposalLiveUpdate();
+ bindScopeEditorEvents();
+ const pv=document.getElementById('previewProposal');if(pv)pv.onclick=()=>{
   updateProposalPreview();
-  saveProposal(true);
+  const source=document.getElementById('proposalPaper');
+  const stage=document.getElementById('proposalPreviewStage');
+  const modal=document.getElementById('proposalPreviewModal');
+  if(!source||!stage||!modal)return;
+  stage.innerHTML='';
+  [...source.querySelectorAll('.proposal-print-page')].forEach(page=>{
+    const sheet=document.createElement('div');
+    sheet.className='preview-sheet';
+    sheet.innerHTML=page.outerHTML;
+    stage.appendChild(sheet);
+  });
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
 };
+ const closePv=()=>{const modal=document.getElementById('proposalPreviewModal');if(modal){modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}};
+ const closeBtn=document.getElementById('closeProposalPreview');if(closeBtn)closeBtn.onclick=closePv;
+ const modal=document.getElementById('proposalPreviewModal');if(modal)modal.addEventListener('click',e=>{if(e.target===modal)closePv()});
+ const previewPrint=document.getElementById('previewPrintProposal');if(previewPrint)previewPrint.onclick=()=>{updateProposalPreview();saveProposal(true)};
  const logoFile=document.getElementById('logoFile');if(logoFile)logoFile.onchange=()=>{const file=logoFile.files?.[0];if(!file)return;if(file.type!=='image/png')return toast('Envie o logo em formato PNG.');if(file.size>2*1024*1024)return toast('O logo deve ter no máximo 2 MB.');const reader=new FileReader();reader.onload=()=>{state.logo=reader.result;save();const img=document.getElementById('proposalLogo');const wrap=document.getElementById('proposalLogoWrap');if(img)img.src=state.logo;if(wrap)wrap.style.display='flex';const st=document.getElementById('logoStatus');if(st)st.textContent='Logo carregado';toast('Logo adicionado à proposta.')};reader.readAsDataURL(file)};
  const removeLogo=document.getElementById('removeLogo');if(removeLogo)removeLogo.onclick=()=>{state.logo='';save();const img=document.getElementById('proposalLogo');const wrap=document.getElementById('proposalLogoWrap');if(img)img.src='';if(wrap)wrap.style.display='none';const st=document.getElementById('logoStatus');if(st)st.textContent='Nenhum logo carregado';toast('Logo removido.')};
  document.querySelectorAll('.statusSelect').forEach(s=>s.onchange=()=>{const b=state.budgets.find(x=>x.id===s.dataset.id);b.status=s.value;save();toast('Status atualizado.');render('control')});
@@ -970,17 +1136,35 @@ function bind(){
 function serviceModal(serviceId){
  const s=state.services.find(x=>x.id===serviceId)||{name:'',steps:[]};
  openModal(serviceId?'Editar serviço':'Novo serviço',`<div class="form">${field('mName','Nome do serviço','text',s.name,true)}</div><div style="margin-top:18px;font-weight:700">Etapas</div><div id="mSteps">${s.steps.map((e,i)=>stepRow(i,e)).join('')}</div><button class="btn btn-light" id="addStep" style="margin-top:10px">＋ Adicionar etapa</button><div class="actions"><button class="btn btn-dark" id="saveService">Salvar serviço</button></div>`);
- document.getElementById('addStep').onclick=()=>{const box=document.getElementById('mSteps');box.insertAdjacentHTML('beforeend',stepRow(box.children.length,{}))};
+ document.getElementById('addStep').onclick=()=>{const box=document.getElementById('mSteps');const index=box.querySelectorAll('.stepRow').length;box.insertAdjacentHTML('beforeend',stepRow(index,{}));box.lastElementChild?.querySelector('.sn')?.focus()};
  document.getElementById('saveService').onclick=()=>{
   const steps=[...document.querySelectorAll('#mSteps .stepRow')].map(r=>({name:r.querySelector('.sn').value.trim(),hours:round2(parseNumber(r.querySelector('.sh').value))})).filter(x=>x.name);
   if(!document.getElementById('mName').value.trim())return toast('Informe o nome do serviço.');
   if(!steps.length)return toast('Adicione pelo menos uma etapa com horas válidas.');
    if(steps.some(x=>x.hours<=0))return toast('Todas as etapas precisam ter horas maiores que zero.');
-   if(serviceId){s.name=document.getElementById('mName').value.trim();s.steps=steps}else state.services.push({id:id(),name:document.getElementById('mName').value.trim(),steps,hours:round2(steps.reduce((a,b)=>a+parseNumber(b.hours),0))});
-  if(serviceId)s.hours=steps.reduce((a,b)=>a+b.hours,0);save();document.getElementById('modal').classList.remove('open');render('services');toast('Serviço salvo.');
+   const totalHours=round2(steps.reduce((a,b)=>a+parseNumber(b.hours),0));
+  if(serviceId){
+    s.name=document.getElementById('mName').value.trim();
+    s.steps=steps;
+    s.hours=totalHours;
+  }else{
+    state.services.push({id:id(),name:document.getElementById('mName').value.trim(),steps,hours:totalHours});
+  }
+  normalizeState();
+  save();
+  document.getElementById('modal').classList.remove('open');
+  render('services');
+  toast('Serviço salvo.');
  };
 }
-function stepRow(i,e){return `<div class="stepRow" style="display:grid;grid-template-columns:1fr 100px;gap:8px;margin-top:8px">${field('sn'+i,'','text',e.name)}${field('sh'+i,'','number',e.hours)}</div>`}
+function stepRow(i,e={}){
+ const name=String(e.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
+ const hours=parseNumber(e.hours);
+ return `<div class="stepRow" style="display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;margin-top:8px">
+   <input class="sn" type="text" value="${name}" placeholder="Nome da etapa">
+   <input class="sh" type="number" min="0.01" step="0.01" inputmode="decimal" value="${hours>0?hours:''}" placeholder="Horas">
+ </div>`;
+}
 function loadSteps(){const s=state.services.find(x=>x.id===document.getElementById('serviceSelect').value);const box=document.getElementById('stepsBox');if(!s){box.innerHTML='<div class="empty">Selecione um serviço para carregar as etapas.</div>';updateBudgetPreview();return}box.innerHTML=`<div style="font-size:12px;color:#777;margin-bottom:9px">Selecione as etapas que farão parte do orçamento:</div><div class="checklist">${s.steps.map((e,i)=>`<label class="check"><input type="checkbox" class="stepCheck" data-index="${i}" data-hours="${e.hours}" checked> <span>${esc(e.name)}</span><strong style="margin-left:auto">${e.hours}h</strong></label>`).join('')}</div>`;document.querySelectorAll('.stepCheck').forEach(x=>x.onchange=updateBudgetPreview);updateBudgetPreview()}
 function updateBudgetPreview(){
  const serviceId=document.getElementById('serviceSelect')?.value;
@@ -991,13 +1175,7 @@ function updateBudgetPreview(){
    if(metaEl)metaEl.textContent='Selecione um serviço e as etapas.';
    return;
  }
- const complexityValue=document.getElementById('complexity')?.value||'';
- if(!complexityValue){
-   if(metaEl)metaEl.textContent='Selecione a complexidade para calcular o orçamento.';
-   [valueEl,minEl,estEl,maxEl].forEach(el=>{if(el)el.textContent=money(0)});
-   return;
- }
- const complexity=parseNumber(complexityValue);
+ const complexity=parseNumber(document.getElementById('complexity')?.value)||1;
  const h=round2([...document.querySelectorAll('.stepCheck:checked')].reduce((a,x)=>a+parseNumber(x.dataset.hours),0)*complexity);
  const c=calcPricing();
  const v=round2(h*c.final), min=round2(h*c.floor), max=round2(h*c.ceiling);
@@ -1021,13 +1199,13 @@ function saveBudget(){
  if(!selected.length)return toast('Selecione pelo menos uma etapa.');
  const pricing=calcPricing();
  if(pricing.final<=0)return toast('Configure a precificação antes de salvar o orçamento.');
- const complexityValue=document.getElementById('complexity')?.value||'';
- if(!complexityValue)return toast('Selecione a complexidade antes de salvar o orçamento.');
- const complexity=parseNumber(complexityValue);
+ const complexity=parseNumber(document.getElementById('complexity')?.value)||1;
  const hours=round2(selected.reduce((a,x)=>a+(Number(x.hours)||0),0)*complexity);
  const value=round2(hours*pricing.final);
+ const budgetMin=round2(hours*pricing.floor);
+ const budgetMax=round2(hours*pricing.ceiling);
  if(value<=0)return toast('O orçamento calculado precisa ser maior que zero.');
- const b={id:id(),date:localDateISO(),client,project,service:s.name,hours,value,status:'ENVIADO',steps:selected.map(x=>x.name)};
+ const b={id:id(),date:localDateISO(),client,project,service:s.name,hours,value,status:'ENVIADO',steps:selected.map(x=>x.name),range:{min:budgetMin,estimated:value,max:budgetMax}};
  state.budgets.push(b);
  save();
  toast('Orçamento salvo. Abrindo Proposta Comercial...');
@@ -1049,7 +1227,12 @@ function updateProposalPreview(){
  const b=state.budgets.find(x=>x.id===budgetId);
  if(!b)return;
  const get=(id)=>document.getElementById(id);
- const title=get('propTitle'),date=get('propDate'),validity=get('propValidity'),name=get('propName'),email=get('propEmail'),phone=get('propPhone'),intro=get('propIntro'),notes=get('propNotes');
+ const title=get('propTitle'),date=get('propDate'),validity=get('propValidity'),name=get('propName'),email=get('propEmail'),phone=get('propPhone'),intro=get('propIntro'),inclusos=get('propInclusos'),naoInclusos=get('propNaoInclusos'),value=get('propValue'),bank=get('propBank'),notes=get('propNotes'),architect=get('propArchitect'),office=get('propOffice'),cau=get('propCAU'),address=get('propAddress'),technicalEnabled=get('propTechnicalEnabled'),technicalValue=get('propTechnicalValue'),technicalDescription=get('propTechnicalDescription');
+ if(architect||office||cau||address){
+   state.proposalIdentity={architect:architect?.value||'',office:office?.value||'',cau:cau?.value||'',address:address?.value||''};
+   save();
+   const footer=get('paperIdentityFooter'); if(footer)footer.textContent=proposalIdentityText();
+ }
  const set=(id,value)=>{const el=get(id);if(el)el.textContent=value;};
  if(title)set('paperTitle',title.value||'Proposta Comercial');
  if(date)set('paperDate',dateBR(date.value||localDateISO()));
@@ -1061,12 +1244,44 @@ function updateProposalPreview(){
    const wrap=get('paperNotesWrap'),paper=get('paperNotes');
    if(wrap&&paper){paper.textContent=notes.value||'';wrap.style.display=notes.value?'':'none';}
  }
- renderPaperPayment(readPlan());
+ const setMoney=(id,val)=>{const el=get(id);if(el)el.textContent=money(round2(val));};
+ const range=getBudgetRange(b);
+ setMoney('budgetRefMin',range.min);
+ setMoney('budgetRefEstimated',range.estimated);
+ setMoney('budgetRefMax',range.max);
+ if(inclusos)set('paperInclusos',inclusos.value||defaultInclusos());
+ if(naoInclusos)set('paperNaoInclusos',naoInclusos.value||defaultNaoInclusos());
+ if(value)setMoney('paperValue',value.value||b.value);
+ if(bank){const wrap=get('paperBankWrap'),paper=get('paperBank');if(wrap&&paper){paper.textContent=bank.value||'';wrap.style.display=bank.value?'':'none';}}
+ const scope=get('paperScope');
+ if(scope){
+   const items=readScopeEditor();
+   if(items.length){
+     scope.innerHTML=`<div style="font-size:13px;color:#666;margin-bottom:9px">${esc(b.project||b.service||'Serviço contratado')}</div><div style="display:grid;gap:10px">${items.map((step,i)=>`<div style="padding:10px 12px;background:#FAFAF8;border:1px solid #EEEDE8;border-radius:9px"><div style="display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-weight:700;color:#B77989">${i+1}.</span><div><strong>${esc(step.name||`Etapa ${i+1}`)}</strong>${step.description?`<div style="font-size:12px;line-height:1.65;color:#5F625E;margin-top:4px">${esc(step.description)}</div>`:''}</div></div></div>`).join('')}</div>`;
+   }else scope.innerHTML='<p class="muted">Escopo e etapas não informados no orçamento.</p>';
+ }
+ const techWrap=get('paperTechnicalWrap'),techPaperValue=get('paperTechnicalValue'),techPaperDesc=get('paperTechnicalDescription');
+ if(techWrap&&techPaperValue&&techPaperDesc){
+   const enabled=!!technicalEnabled?.checked;
+   techWrap.style.display=enabled?'':'none';
+   techPaperValue.textContent=enabled?money(round2(technicalValue?.value||0)):'';
+   techPaperDesc.textContent=enabled?(technicalDescription?.value||defaultTechnicalSupportDescription()):'';
+ }
+ syncActivePaymentOption();
+ renderPaymentOptions();
+ renderPaperPaymentOptions(getPaymentOptions(b.id));
 }
 
 function bindProposalLiveUpdate(){
- const ids=['propDate','propValidity','propTitle','propName','propEmail','propPhone','propIntro','propNotes'];
+ const ids=['propDate','propValidity','propTitle','propName','propEmail','propPhone','propIntro','propInclusos','propNaoInclusos','propValue','propBank','propNotes','propArchitect','propOffice','propCAU','propAddress','propTechnicalValue','propTechnicalDescription'];
  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateProposalPreview);});
+ const technicalEnabled=document.getElementById('propTechnicalEnabled');
+ if(technicalEnabled)technicalEnabled.addEventListener('change',()=>{
+   const editor=document.getElementById('technicalSupportEditor');
+   if(editor)editor.style.display=technicalEnabled.checked?'grid':'none';
+   updateProposalPreview();
+ });
+ document.querySelectorAll('#scopeEditor input,#scopeEditor textarea').forEach(el=>el.addEventListener('input',updateProposalPreview));
  updateProposalPreview();
 }
 
@@ -1075,50 +1290,154 @@ function getPlan(bid){
  if(Array.isArray(saved) && saved.length) return saved.map((x,i)=>({description:String(x.description||`Parcela ${i+1}`),amount:round2(x.amount),due:x.due||''}));
  const prop=state.proposals.find(x=>x.budgetId===bid);
  if(Array.isArray(prop?.paymentPlan) && prop.paymentPlan.length) return prop.paymentPlan.map((x,i)=>({description:String(x.description||`Parcela ${i+1}`),amount:round2(x.amount),due:x.due||''}));
- const b=state.budgets.find(x=>x.id===bid), total=round2(b?.value||0), first=round2(total*.5);
+ const b=state.budgets.find(x=>x.id===bid), savedProp=state.proposals.find(x=>x.budgetId===bid), total=round2(savedProp?.totalValue ?? b?.value ?? 0), first=round2(total*.5);
  return [{description:'Na contratação',amount:first,due:''},{description:'Na entrega do projeto',amount:round2(total-first),due:''}];
 }
-function renderPaymentPlan(){
- const b=state.budgets.find(x=>x.id===document.getElementById('proposalBudget')?.value),box=document.getElementById('paymentPlanBox');if(!b||!box)return;
- const plan=getPlan(b.id);
- box.innerHTML=plan.map((x,i)=>`<div class="installment-row"><span class="installment-number">${i+1}</span><input class="installment-desc" value="${esc(x.description)}" placeholder="Descrição"><input class="installment-amount" type="number" step="0.01" min="0" value="${round2(x.amount).toFixed(2)}" placeholder="Valor"><input class="installment-due" type="date" value="${esc(x.due||'')}"><button type="button" class="btn btn-danger removeInstallment">Excluir</button></div>`).join('');
- box.querySelectorAll('input').forEach(x=>x.oninput=updatePlan);box.querySelectorAll('.removeInstallment').forEach(x=>x.onclick=()=>{x.parentElement.remove();renumberPlan();updatePlan()});updatePlan();
+function defaultPaymentOptions(bid){
+ const b=state.budgets.find(x=>x.id===bid), savedProp=state.proposals.find(x=>x.budgetId===bid), total=round2(savedProp?.totalValue ?? b?.value ?? 0), half=round2(total/2);
+ return [
+   {title:'À vista',fixed:true,plan:[{description:'Pagamento à vista',amount:total,due:''}]},
+   {title:'50% Contratação + 50% Entrega Final',fixed:true,plan:[
+      {description:'50% na contratação',amount:half,due:''},
+      {description:'50% na entrega final',amount:round2(total-half),due:''}
+   ]}
+ ];
 }
-function renumberPlan(){document.querySelectorAll('#paymentPlanBox .installment-number').forEach((x,i)=>x.textContent=i+1)}
-function readPlan(){return [...document.querySelectorAll('#paymentPlanBox .installment-row')].map((r,i)=>({description:r.querySelector('.installment-desc')?.value.trim()||`Parcela ${i+1}`,amount:round2(r.querySelector('.installment-amount')?.value||0),due:r.querySelector('.installment-due')?.value||''}))}
-function updatePlan(){
- const b=state.budgets.find(x=>x.id===document.getElementById('proposalBudget')?.value),box=document.getElementById('paymentPlanBox');if(!b||!box)return;
- const sum=round2(readPlan().reduce((a,x)=>a+x.amount,0)),diff=round2(b.value-sum);
- let s=box.querySelector('.plan-summary');if(!s){s=document.createElement('div');s.className='plan-summary';box.appendChild(s)}
- s.innerHTML=`Total da proposta: <strong>${money(b.value)}</strong> · Parcelado: <strong>${money(sum)}</strong> · <span class="${Math.abs(diff)<.01?'plan-ok':'plan-warning'}">${Math.abs(diff)<.01?'✓ Valores conferem':'⚠ Diferença: '+money(diff)}</span>`;
- updateProposalPreview();
+function getPaymentOptions(bid){
+ const saved=state.paymentOptions?.[bid];
+ if(Array.isArray(saved) && saved.length){
+   const normalized=saved.map((o,i)=>({title:String(o?.title||`Opção ${i+1}`),fixed:!!o?.fixed,plan:Array.isArray(o?.plan)&&o.plan.length?o.plan.map((x,j)=>({description:String(x.description||`Parcela ${j+1}`),amount:round2(x.amount),due:x.due||''})):[{description:'Pagamento',amount:0,due:''}]}));
+   // Compatibilidade com a versão anterior: se só existir a opção À vista padrão, recria também a opção 50/50.
+   if(normalized.length===1 && normalized[0].title.trim().toLowerCase()==='à vista') return defaultPaymentOptions(bid);
+   return normalized;
+ }
+ const prop=state.proposals.find(x=>x.budgetId===bid);
+ if(Array.isArray(prop?.paymentOptions) && prop.paymentOptions.length) return prop.paymentOptions.map((o,i)=>({title:String(o?.title||`Opção ${i+1}`),fixed:!!o?.fixed,plan:Array.isArray(o?.plan)&&o.plan.length?o.plan.map((x,j)=>({description:String(x.description||`Parcela ${j+1}`),amount:round2(x.amount),due:x.due||''})):[{description:'Pagamento',amount:0,due:''}]}));
+ return defaultPaymentOptions(bid);
 }
-function addInstallment(){
- const plan=readPlan();plan.push({description:`Parcela ${plan.length+1}`,amount:0,due:''});
- const box=document.getElementById('paymentPlanBox');if(!box)return;
- box.innerHTML=plan.map((x,i)=>`<div class="installment-row"><span class="installment-number">${i+1}</span><input class="installment-desc" value="${esc(x.description)}"><input class="installment-amount" type="number" step="0.01" min="0" value="${round2(x.amount).toFixed(2)}"><input class="installment-due" type="date" value="${esc(x.due||'')}"><button type="button" class="btn btn-danger removeInstallment">Excluir</button></div>`).join('');
- box.querySelectorAll('input').forEach(x=>x.oninput=updatePlan);box.querySelectorAll('.removeInstallment').forEach(x=>x.onclick=()=>{x.parentElement.remove();renumberPlan();updatePlan()});updatePlan();
+let paymentOptionActive=0;
+function readActivePaymentPlan(){
+ return [...document.querySelectorAll('#activePaymentPlanBox .installment-row')].map((r,i)=>({description:r.querySelector('.installment-desc')?.value.trim()||`Parcela ${i+1}`,amount:round2(r.querySelector('.installment-amount')?.value||0),due:r.querySelector('.installment-due')?.value||''}));
 }
+function syncActivePaymentOption(){
+ const bid=document.getElementById('proposalBudget')?.value;if(!bid)return;
+ const opts=getPaymentOptions(bid),o=opts[paymentOptionActive];if(!o)return;
+ const title=document.getElementById('activePaymentOptionTitle');
+ if(title) o.title=title.value.trim()||`Opção ${paymentOptionActive+1}`;
+ o.plan=readActivePaymentPlan();
+ state.paymentOptions[bid]=opts;
+}
+function renderPaymentOptions(){
+ const b=state.budgets.find(x=>x.id===document.getElementById('proposalBudget')?.value),box=document.getElementById('paymentOptionsBox');if(!b||!box)return;
+ let opts=getPaymentOptions(b.id);
+ const total=round2(document.getElementById('propValue')?.value||b.value);
+ if(opts.length<2){ opts=defaultPaymentOptions(b.id); }
+ // Mantém os dois formatos base como opções fixas e preserva as opções extras criadas pelo arquiteto.
+ opts[0]={title:'À vista',fixed:true,plan:[{description:'Pagamento à vista',amount:total,due:opts[0]?.plan?.[0]?.due||''}]};
+ const half=round2(total/2);
+ opts[1]={title:'50% Contratação + 50% Entrega Final',fixed:true,plan:[
+   {description:'50% na contratação',amount:half,due:opts[1]?.plan?.[0]?.due||''},
+   {description:'50% na entrega final',amount:round2(total-half),due:opts[1]?.plan?.[1]?.due||''}
+ ]};
+ state.paymentOptions[b.id]=opts;
+ const fixed0=`<div class="card payment-option-card" style="padding:12px;border:1px solid #ECECE6;margin-bottom:10px"><div style="font-weight:800;font-size:12px;margin-bottom:8px">À vista</div><div class="payment-plan-box">${fixedPlanRow(opts[0].plan[0],0,'Pagamento à vista',true)}</div><div class="plan-summary" style="margin-top:8px">Total da proposta: <strong>${money(total)}</strong></div></div>`;
+ const fixed1=`<div class="card payment-option-card" style="padding:12px;border:1px solid #ECECE6;margin-bottom:10px"><div style="font-weight:800;font-size:12px;margin-bottom:8px">50% Contratação + 50% Entrega Final</div><div class="payment-plan-box">${fixedPlanRow(opts[1].plan[0],0,'50% na contratação',true)}${fixedPlanRow(opts[1].plan[1],1,'50% na entrega final',true)}</div><div class="plan-summary" style="margin-top:8px">Total da proposta: <strong>${money(total)}</strong></div></div>`;
+ const extraBlocks=opts.slice(2).map((o,i)=>{
+   const idx=i+2;
+   const rows=(o.plan||[]).map((x,j)=>`<div class="installment-row"><span class="installment-number">${j+1}</span><input class="installment-desc" value="${esc(x.description)}" placeholder="Descrição"><input class="installment-amount" type="number" step="0.01" min="0" value="${round2(x.amount).toFixed(2)}" placeholder="Valor"><input class="installment-due" type="date" value="${esc(x.due||'')}"><button type="button" class="btn btn-danger removeInstallment">Excluir</button></div>`).join('');
+   return `<div class="card payment-option-card custom-payment-option" data-option-index="${idx}" style="padding:12px;border:1px solid #ECECE6;margin-bottom:10px"><div class="field"><label>Nome da opção</label><input class="custom-payment-option-title" type="text" value="${esc(o.title||`Opção ${idx+1}`)}" placeholder="Ex.: 30% de entrada + parcelas"></div><div class="payment-plan-box">${rows}</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button type="button" class="btn btn-light addExtraInstallment">＋ Adicionar parcela</button><button type="button" class="btn btn-danger removePaymentOption" data-option-index="${idx}">Excluir esta opção</button></div><div class="plan-summary extra-summary" style="margin-top:8px"></div></div>`;
+ }).join('');
+ box.innerHTML=`${fixed0}${fixed1}${extraBlocks}`;
+ // Opções fixas não possuem botão de adicionar parcela. Elas são sempre recalculadas sobre o valor total da proposta.
+ box.querySelectorAll('.custom-payment-option-title').forEach((el,idx)=>el.addEventListener('input',()=>{const oidx=idx+2;const ops=getPaymentOptions(b.id);if(ops[oidx]){ops[oidx].title=el.value.trim()||`Opção ${oidx+1}`;state.paymentOptions[b.id]=ops;}updateProposalPreview();}));
+ box.querySelectorAll('.custom-payment-option').forEach(card=>{
+   const oidx=Number(card.dataset.optionIndex);
+   card.querySelectorAll('.installment-desc,.installment-amount,.installment-due').forEach(el=>el.addEventListener('input',()=>{const ops=getPaymentOptions(b.id);if(ops[oidx]){ops[oidx].plan=[...card.querySelectorAll('.installment-row')].map((r,j)=>({description:r.querySelector('.installment-desc')?.value.trim()||`Parcela ${j+1}`,amount:round2(r.querySelector('.installment-amount')?.value||0),due:r.querySelector('.installment-due')?.value||''}));state.paymentOptions[b.id]=ops;}updateProposalPreview();}));
+   card.querySelectorAll('.removeInstallment').forEach(btn=>btn.onclick=()=>{btn.parentElement.remove();renumberCard(card);syncCustomCard(card,oidx,b.id);updateProposalPreview();});
+   card.querySelector('.addExtraInstallment')?.addEventListener('click',()=>{const ops=getPaymentOptions(b.id);if(!ops[oidx])return;ops[oidx].plan.push({description:`Parcela ${ops[oidx].plan.length+1}`,amount:0,due:''});state.paymentOptions[b.id]=ops;renderPaymentOptions();updateProposalPreview();});
+ });
+ box.querySelectorAll('.removePaymentOption').forEach(btn=>btn.onclick=()=>{const idx=Number(btn.dataset.optionIndex);const ops=getPaymentOptions(b.id);if(idx<2)return;ops.splice(idx,1);state.paymentOptions[b.id]=ops;renderPaymentOptions();updateProposalPreview();});
+ document.getElementById('addPaymentOption')&&(document.getElementById('addPaymentOption').onclick=()=>{const ops=getPaymentOptions(b.id);ops.push({title:`Outra opção`,fixed:false,plan:[{description:'Parcela 1',amount:0,due:''}]});state.paymentOptions[b.id]=ops;renderPaymentOptions();updateProposalPreview();});
+ box.querySelectorAll('.custom-payment-option').forEach(card=>syncCustomCard(card,Number(card.dataset.optionIndex),b.id));
+}
+function fixedPlanRow(x,i,placeholder,readonly=false){
+ return `<div class="installment-row"><span class="installment-number">${i+1}</span><input class="installment-desc" value="${esc(x.description||placeholder)}" readonly style="background:#F7F7F4"><input class="installment-amount" type="number" step="0.01" min="0" value="${round2(x.amount).toFixed(2)}" readonly style="background:#F7F7F4"><input class="installment-due" type="date" value="${esc(x.due||'')}" ${readonly?'readonly style="background:#F7F7F4"':''}></div>`;
+}
+function syncCustomCard(card,oidx,bid){
+ const ops=getPaymentOptions(bid),o=ops[oidx];if(!o)return;
+ o.title=card.querySelector('.custom-payment-option-title')?.value.trim()||`Opção ${oidx+1}`;
+ o.plan=[...card.querySelectorAll('.installment-row')].map((r,j)=>({description:r.querySelector('.installment-desc')?.value.trim()||`Parcela ${j+1}`,amount:round2(r.querySelector('.installment-amount')?.value||0),due:r.querySelector('.installment-due')?.value||''}));
+ state.paymentOptions[bid]=ops;
+ const total=round2(document.getElementById('propValue')?.value||state.budgets.find(x=>x.id===bid)?.value||0),sum=round2(o.plan.reduce((a,x)=>a+x.amount,0)),diff=round2(total-sum),summary=card.querySelector('.extra-summary');
+ if(summary)summary.innerHTML=`Total da proposta: <strong>${money(total)}</strong> · Esta opção: <strong>${money(sum)}</strong> · <span class="${Math.abs(diff)<.01?'plan-ok':'plan-warning'}">${Math.abs(diff)<.01?'✓ Valores conferem':'⚠ Diferença: '+money(diff)}</span>`;
+}
+function renumberCard(card){card.querySelectorAll('.installment-number').forEach((x,i)=>x.textContent=i+1)}
+function readPaymentOptions(){
+ const bid=document.getElementById('proposalBudget')?.value;if(!bid)return [];
+ const opts=getPaymentOptions(bid);
+ // Captura qualquer edição feita nas opções extras antes de salvar.
+ document.querySelectorAll('.custom-payment-option').forEach(card=>syncCustomCard(card,Number(card.dataset.optionIndex),bid));
+ return getPaymentOptions(bid);
+}
+function renderPaperPaymentOptions(options){
+ const el=document.getElementById('paperPayment');if(!el)return;
+ if(!Array.isArray(options)||!options.length){el.innerHTML='<p class="muted">Forma de pagamento não definida.</p>';return;}
+ const visible=options.filter(o=>(o.plan||[]).some(x=>(+x.amount||0)>0));
+ if(!visible.length){el.innerHTML='<p class="muted">Forma de pagamento não definida.</p>';return;}
+ const cards=visible.map((opt,i)=>{
+   const isCash=String(opt.title||'').trim().toLowerCase()==='à vista';
+   const rows=(opt.plan||[]).filter(x=>(+x.amount||0)>0).map((x,j)=>`<div class="paper-payment-row"><div>${!isCash?`<strong>${esc(x.description||`Parcela ${j+1}`)}</strong>`:''}${x.due?`<span class="muted" style="display:block;margin-top:3px">Vencimento: ${dateBR(x.due)}</span>`:''}</div><strong>${money(x.amount)}</strong></div>`).join('');
+   const sum=(opt.plan||[]).reduce((a,x)=>a+(+x.amount||0),0);
+   const totalBlock=isCash?'':`<div class="paper-payment-total"><span>Total desta opção</span><strong>${money(sum)}</strong></div>`;
+   return `<div class="paper-payment-option"><div class="paper-payment-option-head"><div class="paper-payment-option-title">${esc(opt.title||`Opção ${i+1}`)}</div><span class="paper-payment-option-badge">Opção ${i+1}</span></div><div class="paper-payment-table">${rows}</div>${totalBlock}</div>`;
+ }).join('');
+ el.innerHTML=`<div class="paper-payment-choice-note"><strong>Escolha uma das opções de pagamento abaixo.</strong> As condições são alternativas e não cumulativas.</div><div class="paper-payment-choice-label">Condições de pagamento</div>${cards}`;
+}
+function renderPaymentPlan(plan){renderPaperPaymentOptions([{title:'Condições de pagamento',plan:Array.isArray(plan)?plan:[]}]);}
 
 function saveProposal(print=false){
  const budgetId=document.getElementById('proposalBudget')?.value;
  const b=state.budgets.find(x=>x.id===budgetId);if(!b)return;
- const plan=readPlan(),sum=Math.round(plan.reduce((a,x)=>a+x.amount,0)*100)/100;
- if(Math.abs(sum-b.value)>.01)return toast('A soma das parcelas precisa ser igual ao valor da proposta.');
+ const totalValue=round2(document.getElementById('propValue')?.value||b.value);
+ const paymentOptions=readPaymentOptions();
+ const invalidOption=paymentOptions.findIndex(o=>Math.abs(round2((o.plan||[]).reduce((a,x)=>a+x.amount,0))-totalValue)>.01);
+ if(totalValue<=0)return toast('Informe um valor total válido para a proposta.');
+ if(invalidOption>=0)return toast(`A ${paymentOptions[invalidOption].title||`opção ${invalidOption+1}`} precisa somar exatamente o valor da proposta.`);
+ const plan=Array.isArray(state.paymentPlans?.[b.id])&&state.paymentPlans[b.id].length?state.paymentPlans[b.id]:(paymentOptions[0]?.plan||[]);
 
  const prop={
    budgetId:b.id,
    date:document.getElementById('propDate').value,
    validity:+document.getElementById('propValidity').value||10,
+   totalValue,
    title:document.getElementById('propTitle').value,
    name:document.getElementById('propName').value,
    email:document.getElementById('propEmail').value,
    phone:document.getElementById('propPhone').value,
    intro:document.getElementById('propIntro').value,
-   payment:plan.map(x=>`${x.description}: ${money(x.amount)}${x.due?' · '+dateBR(x.due):''}`).join(' | '),
-   notes:document.getElementById('propNotes').value
+   scopeItems:readScopeEditor(),
+   technicalSupport:{
+     enabled:!!document.getElementById('propTechnicalEnabled')?.checked,
+     value:round2(document.getElementById('propTechnicalValue')?.value||0),
+     description:document.getElementById('propTechnicalDescription')?.value.trim()||defaultTechnicalSupportDescription()
+   },
+   inclusos:document.getElementById('propInclusos').value,
+   naoInclusos:document.getElementById('propNaoInclusos').value,
+   bankDetails:document.getElementById('propBank').value,
+   paymentOptions,
+   paymentPlan:plan,
+   payment:paymentOptions.map(o=>`${o.title}: ${(o.plan||[]).map(x=>`${x.description}: ${money(x.amount)}${x.due?' · '+dateBR(x.due):''}`).join(' | ')}`).join(' || '),
+   notes:document.getElementById('propNotes').value,
+   proposalIdentity:{...state.proposalIdentity}
  };
 
+ state.proposalScopeTemplate=readScopeEditor();
+ state.paymentOptions[b.id]=paymentOptions;
+ state.proposalTechnicalSupport={
+   enabled:!!document.getElementById('propTechnicalEnabled')?.checked,
+   value:round2(document.getElementById('propTechnicalValue')?.value||0),
+   description:document.getElementById('propTechnicalDescription')?.value.trim()||defaultTechnicalSupportDescription()
+ };
  state.paymentPlans=state.paymentPlans||{};
  state.paymentPlans[b.id]=plan;
 
@@ -1133,16 +1452,10 @@ function saveProposal(print=false){
    toast('Proposta atualizada.');
    setTimeout(()=>window.print(),100);
  }else{
-   toast('Dados salvos e proposta atualizada.');
+   toast('Proposta salva. Confira a pré-visualização antes de gerar o PDF.');
    proposalSelectedBudgetId=budgetId;
-   render('proposal');
-   const selector=document.getElementById('proposalBudget');
-   if(selector){
-     selector.value=budgetId;
-     renderPaymentPlan();
-     renderPaperPayment(state.paymentPlans[budgetId]);
-     updateProposalPreview();
-   }
+   updateProposalPreview();
+   openProposalPreview();
  }
 }
 
