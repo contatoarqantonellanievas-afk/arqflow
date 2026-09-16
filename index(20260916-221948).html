@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARQFLOW — Gestão Comercial para Arquitetos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+:root{
+  --off:#F5F3EE;--ink:#171717;--sand:#D8CBB8;--olive:#68705C;
+  --terr:#B29A84;--white:#fff;--muted:#85837C;--line:#ECE9E2;
+  --shadow:0 10px 30px rgba(32,33,31,.055);--radius:18px
+}
+*{box-sizing:border-box} body{margin:0;background:var(--off);color:var(--ink);font-family:Montserrat,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit} button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:#F0EEE8;color:#30312D;padding:28px 18px;position:fixed;inset:0 auto 0 0;z-index:20}
+.brand{padding:4px 12px 30px;border-bottom:1px solid #DDD9D0}
+.brand b{font-size:24px;letter-spacing:.18em;font-weight:700;color:#30312D}.brand span{display:block;color:#89877F;font-size:11px;letter-spacing:.12em;margin-top:8px;text-transform:uppercase}
+.nav{padding-top:22px}.nav button{width:100%;border:0;background:transparent;color:#73736D;text-align:left;padding:13px 12px;border-radius:12px;margin:3px 0;font-size:14px}.nav button:hover,.nav button.active{background:#E4E0D8;color:#30312D}.nav button.active{box-shadow:inset 3px 0 0 #A7AD9B}
+.main{margin-left:260px;width:calc(100% - 260px);padding:34px 42px 60px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.eyebrow{text-transform:uppercase;letter-spacing:.16em;color:var(--muted);font-size:11px;font-weight:700}.topbar h1{font-family:Georgia,serif;font-weight:500;font-size:32px;margin:5px 0 0}
+.btn{border:0;border-radius:11px;padding:12px 17px;font-weight:700}.btn-dark{background:var(--ink);color:#fff}.btn-light{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn-olive{background:var(--olive);color:#fff}.btn-ter{background:var(--terr);color:#fff}.btn-danger{background:#f5e7e3;color:#8b3f2c}
+.hero{background:#EEEAE2;color:#30312D;border-radius:24px;padding:34px;display:flex;justify-content:space-between;gap:30px;align-items:flex-end;margin-bottom:22px}.hero h2{font:500 36px/1.08 Montserrat,sans-serif;margin:8px 0 12px;max-width:650px}.hero p{color:#6F6E68;max-width:650px;line-height:1.6;margin:0}.hero .btn{background:#D8D0C2;color:#30312D}
+.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.3fr .7fr}.cards{grid-template-columns:repeat(3,1fr)}
+.card{background:#FEFEFC;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}.kpi .label{color:var(--muted);font-size:12px}.kpi .value{font:600 29px Montserrat,sans-serif;margin:12px 0 5px}.kpi .sub{font-size:12px;color:var(--muted)}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:28px 0 13px}.section-title h3{font:500 22px Montserrat,sans-serif;margin:0}.section-title span{font-size:12px;color:var(--muted)}
+.funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.stage{background:#FBFAF7;border:1px solid var(--line);padding:17px;border-radius:14px}.stage b{display:block;font-size:23px;margin-bottom:7px}.stage small{color:var(--muted)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px 8px;border-bottom:1px solid var(--line);font-size:13px}th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}td strong{font-weight:700}.status{display:inline-flex;padding:6px 9px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.05em}.s-enviado{background:#eeeae2}.s-negociacao{background:#f1e7d5}.s-aprovado{background:#e3e9df}.s-perdido{background:#f1dfda}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:#4d4a45}.field input,.field select,.field textarea{border:1px solid var(--line);background:#fff;border-radius:11px;padding:12px 13px;outline:none}.field textarea{min-height:110px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--olive);box-shadow:0 0 0 3px rgba(104,112,92,.1)}
+.actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.result{background:#F0EEE8;color:#30312D;border-radius:16px;padding:22px}.result .big{font:600 38px Georgia,serif;margin:7px 0;color:#30312D}.muted{color:var(--muted)}.note{font-size:12px;color:var(--muted);line-height:1.55}.checklist{display:grid;gap:9px}.check{display:flex;align-items:center;gap:10px;padding:11px;background:#FBFAF7;border-radius:10px}.check input{accent-color:var(--olive)}
+.service-head{display:flex;justify-content:space-between;align-items:flex-start}.service-head h3{font:500 22px Montserrat,sans-serif;margin:0}.tag{background:#eeece6;border-radius:20px;padding:5px 9px;font-size:10px}.etapas{margin-top:17px}.etapa{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}.toolbar{display:flex;gap:10px;flex-wrap:wrap}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.48);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.open{display:flex}.modal-box{background:var(--off);border-radius:20px;max-width:620px;width:100%;padding:26px;max-height:90vh;overflow:auto}.modal-box h3{font:500 25px Montserrat,sans-serif;margin-top:0}
+.proposal{background:#fff;border-radius:20px;padding:40px;box-shadow:var(--shadow);max-width:900px;margin:auto}.proposal .brandline{letter-spacing:.22em;font-weight:800;font-size:13px}.proposal h2{font:500 38px Montserrat,sans-serif;margin:50px 0 12px}.proposal .amount{font:600 34px Montserrat,sans-serif}.proposal hr{border:0;border-top:1px solid var(--line);margin:25px 0}.proposal-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}.print-only{display:none}
+.empty{padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:15px}
+.toast{position:fixed;right:24px;bottom:24px;background:var(--ink);color:#fff;padding:13px 17px;border-radius:12px;display:none;z-index:100;box-shadow:var(--shadow)}
+@media(max-width:1050px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px);padding:25px}.kpis{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.funnel{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.sidebar{position:static;width:100%;height:auto}.app{display:block}.main{margin:0;width:100%;padding:18px}.nav{display:grid;grid-template-columns:repeat(2,1fr)}.brand{padding-bottom:18px}.hero{display:block}.hero h2{font-size:29px}.kpis,.form,.proposal-grid{grid-template-columns:1fr}.funnel{grid-template-columns:1fr}.topbar{align-items:flex-start}.topbar h1{font-size:27px}}
+
+
+
+#proposalPaper hr{margin:10px 0}
+#proposalPaper h2{margin:8px 0 3px}
+#proposalPaper p{margin:6px 0}
+#proposalPaper .proposal-grid{gap:18px}
+#proposalPaper .paper-payment-table{margin-top:7px}
+#proposalPaper .paper-payment-row{padding:8px 12px}
+
+
+/* ===== PDF / IMPRESSÃO — FOLHA A4 ===== */
+@media print{
+  @page{ size:A4 portrait; margin:0; }
+  html,body{
+    margin:0!important;padding:0!important;width:210mm!important;min-height:297mm!important;
+    background:#fff!important;overflow:visible!important;
+  }
+  body > .app, body > .app > .main, #main{
+    display:block!important;width:210mm!important;min-height:297mm!important;height:auto!important;
+    margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important;
+  }
+  body > .app > .sidebar,.topbar,.no-print,.modal,.toast{display:none!important;}
+  #main > *{display:none!important;}
+  #main > .proposal,#proposalPaper{
+    display:block!important;position:relative!important;box-sizing:border-box!important;
+    width:210mm!important;min-width:210mm!important;max-width:210mm!important;
+    margin:0!important;padding:0!important;background:#fff!important;border:0!important;
+    border-radius:0!important;box-shadow:none!important;overflow:visible!important;
+  }
+  #proposalPaper .proposal-print-page{
+    box-sizing:border-box!important;
+    width:210mm!important;height:297mm!important;min-height:297mm!important;
+    padding:15mm 17mm!important;margin:0!important;background:#fff!important;
+    overflow:hidden!important;position:relative!important;
+    page-break-after:always!important;break-after:page!important;
+  }
+  #proposalPaper .proposal-print-page:last-child{
+    page-break-after:auto!important;break-after:auto!important;
+  }
+  #proposalPaper .proposal-logo-wrap{
+    position:absolute!important;
+    top:15mm!important;
+    right:17mm!important;
+    width:68mm!important;
+    height:26mm!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:flex-end!important;
+    z-index:2!important;
+  }
+  #proposalPaper .proposal-logo-wrap img{
+    max-width:58mm!important;
+    max-height:22mm!important;
+    width:auto!important;
+    height:auto!important;
+  }
+  #proposalPaper .brandline{margin-top:0!important;}
+  #proposalPaper hr{margin:7mm 0!important;}
+  #proposalPaper h2{margin:5mm 0 1mm!important;}
+  #proposalPaper p{margin:4mm 0!important;}
+  #proposalPaper .proposal-grid{gap:18px!important;}
+  #proposalPaper .paper-payment-row{padding:7px 10px!important;break-inside:avoid!important;page-break-inside:avoid!important;}
+  #proposalPaper .proposal-print-page > *{
+    break-inside:avoid!important;page-break-inside:avoid!important;
+  }
+  #proposalPaper .proposal-print-page-1 .paper-includes-section{position:relative!important;top:-6mm!important;}
+  #proposalPaper .paper-payment-option{
+    break-inside:avoid!important;page-break-inside:avoid!important;
+  }
+}
+
+
+</style>
+<style id="nav-icons-refinement">
+.nav-icon{
+  width:20px;
+  height:20px;
+  flex:0 0 20px;
+  display:inline-block;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.65;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.78;
+  transition:transform .18s ease, opacity .18s ease;
+}
+nav a:hover .nav-icon,
+nav button:hover .nav-icon,
+.sidebar a:hover .nav-icon,
+.sidebar button:hover .nav-icon,
+.nav-item:hover .nav-icon,
+.nav-link:hover .nav-icon{
+  opacity:1;
+  transform:translateY(-.5px);
+}
+.active .nav-icon,
+nav a.active .nav-icon,
+nav button.active .nav-icon,
+.sidebar a.active .nav-icon,
+.sidebar button.active .nav-icon{
+  opacity:1;
+}
+
+
+<style id="modern-ui">
+:root{
+  --off:#F8F8F6;
+  --ink:#292A27;
+  --sand:#E9E4DA;
+  --olive:#7E8775;
+  --terr:#B49A83;
+  --white:#FFFFFF;
+  --muted:#858680;
+  --line:#E9E9E4;
+  --shadow:0 8px 28px rgba(34,35,31,.045);
+  --radius:20px;
+}
+body{background:#F8F8F6;color:var(--ink);font-family:"Montserrat",Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.01em}
+.app{min-height:100vh}
+.sidebar{
+  width:248px;background:rgba(255,255,255,.82);color:var(--ink);
+  border-right:1px solid var(--line);padding:24px 16px;backdrop-filter:blur(18px);
+}
+.brand{padding:7px 14px 25px;border-bottom:1px solid var(--line)}
+.brand b{font-family:"Montserrat",sans-serif;font-size:20px;letter-spacing:.22em;font-weight:700;color:#292A27}
+.brand span{display:block;color:#96968F;font-size:9px;letter-spacing:.11em;margin-top:8px;text-transform:uppercase;line-height:1.5}
+.nav{padding-top:18px}
+.nav button{
+  width:100%;border:0;background:transparent;color:#85857F;text-align:left;
+  padding:11px 13px;border-radius:12px;margin:3px 0;font-size:12px;font-weight:600;
+  transition:.18s ease;
+}
+.nav button:hover{background:#F4F3EF;color:#454640}
+.nav button.active{background:#ECEAE4;color:#292A27;box-shadow:none}
+.nav button.active:before{content:"";display:inline-block;width:4px;height:4px;background:#7E8775;border-radius:50%;vertical-align:middle;margin-right:8px}
+.main{margin-left:248px;width:calc(100% - 248px);padding:34px 46px 64px;max-width:1700px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.eyebrow{font-size:9px;letter-spacing:.17em;color:#989991;font-weight:700}
+.topbar h1{font-family:"Montserrat",sans-serif;font-weight:600;font-size:28px;letter-spacing:-.04em;margin:5px 0 0}
+.muted{color:#858680}
+.btn{
+  border:1px solid transparent;border-radius:12px;padding:11px 16px;font-size:11px;
+  font-weight:700;transition:.18s ease;letter-spacing:-.01em
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-dark{background:#30312D;color:#fff}
+.btn-light{background:#fff;border-color:#E6E5E0;color:#41423D}
+.btn-olive{background:#7E8775;color:#fff}
+.btn-ter{background:#B49A83;color:#fff}
+.btn-danger{background:#F7ECE8;color:#936553}
+.hero{
+  background:linear-gradient(135deg,#EEEDE8 0%,#F5F3EE 100%);color:var(--ink);
+  border:1px solid #E7E5DE;border-radius:24px;padding:36px 38px;display:flex;
+  justify-content:space-between;gap:30px;align-items:flex-end;margin-bottom:20px;
+  box-shadow:var(--shadow)
+}
+.hero h2{font-family:"Montserrat",sans-serif;font-weight:600;font-size:32px;line-height:1.13;letter-spacing:-.045em;margin:8px 0 12px;max-width:680px}
+.hero p{color:#73746E;max-width:650px;line-height:1.7;margin:0;font-size:12px}
+.hero .btn{background:#30312D;color:#fff}
+.grid{gap:14px}
+.card{
+  background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:18px;
+  padding:21px;box-shadow:var(--shadow)
+}
+.kpi .label{color:#92938C;font-size:9px;letter-spacing:.08em;font-weight:700}
+.kpi .value{font-family:"Montserrat",sans-serif;font-weight:600;font-size:27px;letter-spacing:-.04em;margin:11px 0 5px}
+.kpi .sub{font-size:10px;color:#969790}
+.section-title{margin:27px 0 12px}
+.section-title h3{font-family:"Montserrat",sans-serif;font-weight:600;font-size:18px;letter-spacing:-.03em;margin:0}
+.section-title span{font-size:10px;color:#8B8C85}
+.funnel{gap:8px}
+.stage{background:#FAFAF8;border:1px solid #ECEBE6;padding:16px;border-radius:14px}
+.stage b{font-family:"Montserrat",sans-serif;font-size:22px;font-weight:600;margin-bottom:6px}
+.stage small{color:#858680;font-size:9px}
+table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{padding:13px 8px;border-bottom:1px solid #EEEDE8;font-size:11px}
+th{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#969790}
+.field{gap:6px}
+.field label{font-size:9px;letter-spacing:.03em;font-weight:700;color:#676862}
+.field input,.field select,.field textarea{
+  border:1px solid #E5E4DE;background:#fff;border-radius:11px;padding:11px 12px;
+  outline:none;font-size:11px;color:#393A36
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:#AEB5A4;box-shadow:0 0 0 3px rgba(126,135,117,.08)
+}
+.result{background:#F0EFEA;color:var(--ink);border:1px solid #E3E1DA;border-radius:18px;padding:22px}
+.result .big{font-family:"Montserrat",sans-serif;font-weight:600;font-size:34px;letter-spacing:-.045em;margin:7px 0;color:#30312D}
+.result .eyebrow{color:#858680}
+.result hr{border-top:1px solid #DDDCD5!important}
+.status{border-radius:999px;padding:5px 9px;font-size:8px;letter-spacing:.06em}
+.s-enviado{background:#F0EFEA}.s-negociacao{background:#F2EDE4}.s-aprovado{background:#E9EEE5}.s-perdido{background:#F5E7E2}
+.service-head h3{font-family:"Montserrat",sans-serif;font-weight:600;font-size:17px;letter-spacing:-.03em}
+.tag{background:#F0EFEA;border-radius:999px;padding:5px 9px;font-size:8px}
+.etapa{padding:9px 0;border-bottom:1px solid #EEEDE8;font-size:10px}
+.check{background:#FAFAF8;border:1px solid #F0EFEA;padding:10px;border-radius:11px;font-size:10px}
+.proposal{background:#fff;border:1px solid #EBEAE5;border-radius:22px;padding:42px;box-shadow:var(--shadow);max-width:900px}
+.proposal h2{font-family:"Montserrat",sans-serif;font-weight:600;font-size:34px;letter-spacing:-.045em;margin:45px 0 10px}
+.proposal .amount{font-family:"Montserrat",sans-serif;font-weight:600;font-size:31px;letter-spacing:-.04em}
+.empty{padding:30px;text-align:center;color:#8B8C85;border:1px dashed #DDDCD6;border-radius:15px;background:#FCFCFA}
+.toast{background:#30312D;border-radius:12px;font-size:11px}
+@media(max-width:1050px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px);padding:25px}}
+@media(max-width:700px){.sidebar{width:100%;border-right:0;border-bottom:1px solid var(--line)}.main{margin:0;width:100%;padding:18px}.nav{display:grid;grid-template-columns:repeat(2,1fr)}}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style id="accent-palette">
+:root{
+  --accent-sage:#788A72;
+  --accent-sage-soft:#E8EEE4;
+  --accent-terra:#B8795F;
+  --accent-terra-soft:#F3E6DF;
+  --accent-champ:#D7C4A8;
+  --accent-champ-soft:#F4EEE5;
+}
+.brand b{color:#2F332E}
+.nav button.active{background:#E8EEE4;color:#4F5D4A}
+.nav button.active:before{background:#788A72}
+.nav button:hover{background:#F3F5F0}
+.hero{background:linear-gradient(135deg,#EEF2EB 0%,#F7F3ED 62%,#F4E8E0 100%);border-color:#E2E7DE}
+.hero .eyebrow{color:#788A72!important}
+.hero .btn{background:#596954;color:#fff}
+.kpi:nth-child(1){background:linear-gradient(145deg,#fff 0%,#F7FAF5 100%);border-top:2px solid #A9B7A0}
+.kpi:nth-child(2){background:linear-gradient(145deg,#fff 0%,#FBF5EF 100%);border-top:2px solid #D8B99E}
+.kpi:nth-child(3){background:linear-gradient(145deg,#fff 0%,#F8F5EF 100%);border-top:2px solid #D7C4A8}
+.kpi:nth-child(4){background:linear-gradient(145deg,#fff 0%,#F5F7F2 100%);border-top:2px solid #B6C1AD}
+.btn-olive{background:#788A72}
+.btn-ter{background:#B8795F}
+.btn-dark{background:#30352F}
+.result{background:linear-gradient(145deg,#F0F3ED,#F7F1E9);border-color:#E1E5DD}
+.result .eyebrow{color:#788A72}
+.stage:nth-child(1){border-top:2px solid #D7C4A8}
+.stage:nth-child(2){border-top:2px solid #B8A287}
+.stage:nth-child(3){border-top:2px solid #788A72;background:#F5F8F3}
+.stage:nth-child(4){border-top:2px solid #B8795F;background:#FCF7F4}
+.stage:nth-child(5){border-top:2px solid #C6C8C1}
+.status.s-negociacao{background:#F4EBDD;color:#80664A}
+.status.s-aprovado{background:#E7EEE2;color:#52634E}
+.status.s-perdido{background:#F3E5DE;color:#8D5D49}
+.tag{background:#EAF0E6;color:#5D6C58}
+.check input{accent-color:#788A72}
+.proposal .brandline{color:#596954}
+.proposal{border-top:3px solid #788A72}
+.section-title h3:after{content:"";display:inline-block;width:28px;height:2px;background:#D7C4A8;margin:0 0 4px 9px}
+</style>
+
+
+<style id="pricing-help">
+.field-help{
+  grid-column:span 1;
+  margin-top:-6px;
+  padding:10px 12px;
+  background:#F5F7F2;
+  border:1px solid #E5E9E1;
+  border-radius:11px;
+  font-size:9px;
+  line-height:1.55;
+  color:#73766E;
+}
+.field-help strong{
+  display:block;
+  color:#596653;
+  font-size:9px;
+  margin-bottom:3px;
+}
+@media(max-width:700px){.field-help{grid-column:1}}
+</style>
+
+
+<style id="budget-range-style">
+.budget-range{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.budget-range>div{background:rgba(255,255,255,.62);border:1px solid #E1E4DC;border-radius:12px;padding:11px 10px}
+.budget-range span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:#858680;font-weight:700}
+.budget-range strong{display:block;font-family:"Montserrat",sans-serif;font-size:14px;margin:7px 0 4px;color:#30312D}
+.budget-range small{display:block;font-size:8px;line-height:1.4;color:#92938C}
+.budget-range>div:first-child{border-top:2px solid #D7C4A8}
+.budget-range>div:nth-child(2){border-top:2px solid #788A72;background:#F5F8F3}
+.budget-range>div:last-child{border-top:2px solid #B8795F;background:#FCF7F4}
+@media(max-width:700px){.budget-range{grid-template-columns:1fr}}
+</style>
+
+
+<style id="benchmark-tips">
+.benchmark-tip{margin-top:10px;padding:10px 11px;border-radius:10px;background:#fff7fa;border:1px solid #efdde3}
+.benchmark-tip b{display:block;color:#b77989;font-size:11px;margin-bottom:3px}
+.benchmark-tip small{display:block;color:#747078;font-size:10px;line-height:1.5}
+</style>
+<style id="font-size-refinement">
+body{font-size:14px}
+.nav button{font-size:13px}
+.brand span{font-size:10px}
+.eyebrow{font-size:10px}
+.topbar h1{font-size:30px}
+.topbar .muted{font-size:14px!important}
+.btn{font-size:12px;padding:12px 17px}
+.hero h2{font-size:34px}
+.hero p{font-size:13px}
+.kpi .label{font-size:10px}
+.kpi .value{font-size:29px}
+.kpi .sub{font-size:11px}
+.section-title h3{font-size:19px}
+.section-title span{font-size:11px}
+.stage b{font-size:23px}
+.stage small{font-size:10px}
+th{font-size:9px}
+td{font-size:12px}
+.field label{font-size:10px}
+.field input,.field select,.field textarea{font-size:12px;padding:12px 13px}
+.note{font-size:13px}
+.field-help{font-size:10px;line-height:1.6}
+.field-help strong{font-size:10px}
+.result .big{font-size:36px}
+.result div{font-size:13px}
+.budget-range strong{font-size:15px}
+.budget-range span{font-size:9px}
+.budget-range small{font-size:9px}
+.service-head h3{font-size:18px}
+.etapa{font-size:11px}
+.tag{font-size:9px}
+.check{font-size:11px}
+.proposal h2{font-size:36px}
+.proposal .amount{font-size:33px}
+.proposal p{font-size:13px}
+.status{font-size:9px}
+.empty{font-size:13px}
+</style>
+
+
+<style id="proposal-logo-style">
+.proposal-logo-wrap{
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:8px;
+}
+.proposal-logo-wrap img{
+  max-width:170px;
+  max-height:44px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  object-position:center center;
+  display:block;
+}
+@media print{.proposal-logo-wrap{display:flex!important}}
+</style>
+
+
+<style id="finance-refinement">
+.finance-kpis{margin-top:2px}
+.finance-panel{margin-top:20px}
+.finance-toolbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:14px}
+.finance-filter{border:1px solid #E5E4DE;background:#fff;border-radius:11px;padding:10px 12px;font-size:12px;color:#393A36}
+.finance-list{display:grid;gap:0}
+.payment-row{display:grid;grid-template-columns:minmax(220px,1fr) auto auto auto;align-items:center;gap:18px;padding:16px 4px;border-bottom:1px solid #EEEDE8}
+.payment-row:last-child{border-bottom:0}
+.payment-client{font-size:13px;font-weight:700;color:#30312D}
+.payment-meta{font-size:10px;color:#8B8C85;margin-top:5px}
+.payment-amount{font-size:14px;font-weight:700;white-space:nowrap}
+.payment-row .btn{white-space:nowrap}
+@media(max-width:800px){.finance-toolbar{align-items:flex-start;flex-direction:column}.payment-row{grid-template-columns:1fr auto}.payment-row .status{justify-self:start}.payment-row .btn{justify-self:end}}
+@media(max-width:500px){.payment-row{grid-template-columns:1fr}.payment-row .btn{justify-self:stretch}}
+</style>
+
+<style id="payment-plan-refinement">
+.payment-plan-box{background:#FAFAF8;border:1px solid #E9E9E4;border-radius:14px;padding:10px}.installment-row{display:grid;grid-template-columns:28px minmax(170px,1fr) 130px 135px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #EEEDE8}.installment-number{display:flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;background:#E8EEE4;color:#52634E;font-size:10px;font-weight:800}.installment-row input{border:1px solid #E5E4DE;background:#fff;border-radius:9px;padding:10px;font-size:11px;min-width:0}.plan-summary{padding:12px 2px 2px;text-align:right;font-size:10px;color:#73766E}.plan-ok{color:#52634E;font-weight:700}.plan-warning{color:#936553;font-weight:700}.paper-payment-plan{display:grid;gap:12px}.paper-payment-choice-note{margin:2px 0 10px;padding:10px 12px;border:1px solid #E5E7E1;background:#F7F8F5;border-radius:9px;font-size:10px;color:#666B62;line-height:1.5}.paper-payment-choice-label{display:flex;align-items:center;gap:7px;margin:2px 0 8px;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#7A7E76}.paper-payment-choice-label:before,.paper-payment-choice-label:after{content:'';height:1px;background:#E5E7E1;flex:1}.paper-payment-option{border:1px solid #DDDED8;border-radius:12px;background:#fff;padding:13px 14px}.paper-payment-option-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:9px;margin-bottom:2px;border-bottom:1px solid #EEEDE8}.paper-payment-option-title{font-size:12px;font-weight:800;color:#222522}.paper-payment-option-badge{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#65705F;background:#EEF2EA;border-radius:999px;padding:4px 7px;white-space:nowrap}.paper-payment-row{display:grid;grid-template-columns:1fr auto;gap:5px 15px;padding:10px 0;font-size:11.5px}.paper-payment-row + .paper-payment-row{border-top:1px solid #F0F0EC}.paper-payment-row small{grid-column:1/-1;color:#858680;font-size:10px}.paper-payment-total{display:flex;justify-content:space-between;gap:12px;margin-top:8px;padding-top:9px;border-top:1px solid #E7E7E2;font-size:10px;color:#777A72}.paper-payment-total strong{font-size:11px;color:#232621}.payment-context{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#F5F7F2;border:1px solid #E5E9E1;border-radius:12px;padding:13px;margin-bottom:15px}.payment-context span{display:block;font-size:9px;color:#858680;text-transform:uppercase}.payment-context strong{display:block;margin-top:5px;font-size:12px}.payment-note{margin-top:12px;padding:10px;background:#FAFAF8;border-radius:10px}@media(max-width:700px){.installment-row{grid-template-columns:28px 1fr}.installment-row input,.installment-row button{grid-column:2}.payment-context{grid-template-columns:1fr}.paper-payment-option-head{align-items:flex-start;flex-direction:column}.paper-payment-choice-label:before,.paper-payment-choice-label:after{min-width:20px}}
+</style>
+
+<style id="arqflow-minimal-icons">
+.nav button{display:flex;align-items:center;gap:10px}
+.nav .nav-icon{width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 17px;opacity:.78}
+.nav .nav-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+</style>
+
+<style id="arqflow-larger-fonts">
+body{font-size:15px}
+.nav button{font-size:14px}
+.main{font-size:15px}
+.card{font-size:15px}
+label{font-size:13px}
+input,select,textarea{font-size:14px}
+.btn{font-size:13px}
+.note,.muted,.field-help{font-size:13px}
+.table{font-size:13px}
+</style>
+
+<style id="arqflow-soft-pink">
+:root{
+  --arq-pink:#c98f9e;
+  --arq-pink-dark:#b77989;
+  --arq-pink-soft:#f7e9ed;
+}
+.nav button:hover{background:var(--arq-pink-soft);color:var(--arq-pink-dark)}
+.nav button.active{background:var(--arq-pink-soft);color:var(--arq-pink-dark)}
+.nav .nav-icon{color:currentColor}
+.btn-olive{background:var(--arq-pink);border-color:var(--arq-pink);color:#fff}
+.btn-olive:hover{background:var(--arq-pink-dark);border-color:var(--arq-pink-dark)}
+.eyebrow{color:var(--arq-pink-dark)!important}
+.big{color:var(--arq-pink-dark)}
+input:focus,select:focus,textarea:focus{border-color:var(--arq-pink);box-shadow:0 0 0 3px rgba(201,143,158,.13);outline:none}
+.badge,.status{background:var(--arq-pink-soft);color:var(--arq-pink-dark)}
+</style>
+
+<style id="arqflow-tagline-fina">
+.tagline-fina{
+  display:block;
+  font-weight:400 !important;
+  font-size:.82em !important;
+  letter-spacing:.015em !important;
+  opacity:.72 !important;
+}
+</style>
+
+<style id="arqflow-tax-spacing">
+.compact-help{margin-bottom:8px!important}
+.tax-field{margin-top:0!important}
+.tax-field .field{margin-top:0!important}
+</style>
+
+<style id="arqflow-tax-real-adjustment">
+/* Ajuste específico da seção Minha Precificação */
+.pricing-form .field{margin-bottom:10px!important}
+.pricing-form .field-help{margin-top:4px!important;margin-bottom:6px!important}
+.pricing-form .tax-field{margin-top:-2px!important;padding-top:0!important}
+.pricing-form .tax-field .field{margin-top:0!important;margin-bottom:10px!important}
+</style>
+
+<style id="arqflow-pricing-layout">
+/* Minha Precificação — composição mais equilibrada */
+.pricing-form{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  column-gap:22px!important;
+  row-gap:0!important;
+  align-items:start!important;
+}
+.pricing-form > .field-help{
+  grid-column:1 / -1!important;
+}
+.pricing-form > .tax-field{
+  grid-column:1!important;
+}
+.pricing-form > .field-help:last-of-type{
+  grid-column:1 / -1!important;
+}
+@media(max-width:720px){
+  .pricing-form{grid-template-columns:1fr!important}
+  .pricing-form > .field-help,
+  .pricing-form > .tax-field{grid-column:1!important}
+}
+</style>
+
+<style id="arqflow-pricing-explanations">
+.pricing-form{
+  display:block!important;
+}
+.pricing-form > .field{
+  margin-bottom:10px!important;
+}
+.pricing-form > .field-help{
+  margin-top:-2px!important;
+  margin-bottom:12px!important;
+}
+.pricing-form > .tax-field{
+  margin-top:0!important;
+}
+.pricing-form > .tax-field .field{
+  margin-bottom:10px!important;
+}
+@media(max-width:700px){.value-reference-grid{grid-template-columns:1fr!important}}
+</style>
+<style id="proposal-preview-modal">
+.preview-overlay{position:fixed;inset:0;background:rgba(18,20,18,.72);z-index:1200;display:none;align-items:center;justify-content:center;padding:24px}
+.preview-overlay.open{display:flex}
+.preview-dialog{width:min(1200px,96vw);height:min(94vh,1100px);background:#EEEDE8;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.28)}
+.preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#fff;border-bottom:1px solid #DDDAD2;flex:0 0 auto}
+.preview-toolbar strong{font-size:13px}.preview-toolbar .actions{margin:0;display:flex;gap:8px;align-items:center}
+.preview-stage{flex:1;overflow:auto;padding:24px;display:flex;flex-direction:column;align-items:center;gap:24px;background:#E9E7E1}
+.preview-sheet{width:210mm;min-height:297mm;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.13);position:relative;overflow:hidden;flex:0 0 auto}
+.preview-sheet .proposal-print-page{width:210mm!important;min-height:297mm!important;height:297mm!important;box-sizing:border-box;padding:16mm 16mm 14mm!important;background:#fff!important;position:relative!important;overflow:hidden!important}
+.preview-sheet .proposal-print-page-1{break-after:page}
+@media(max-width:900px){.preview-overlay{padding:10px}.preview-dialog{width:100%;height:96vh}.preview-stage{padding:12px}}
+</style>
+
+<style id="proposal-pdf-final-fix">
+@media print{
+  @page{size:A4 portrait;margin:0!important;}
+  html,body{width:210mm!important;min-width:210mm!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;background:#fff!important;}
+  body>.app,body>.app>.main,#main{display:block!important;width:210mm!important;min-width:210mm!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;background:#fff!important;}
+  #main>.proposal,#proposalPaper{width:210mm!important;min-width:210mm!important;max-width:none!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
+  #proposalPaper .proposal-print-page{width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;box-sizing:border-box!important;margin:0!important;padding:12mm 14mm 11mm!important;overflow:hidden!important;position:relative!important;page-break-after:always!important;break-after:page!important;}
+  #proposalPaper .proposal-print-page:last-child{page-break-after:auto!important;break-after:auto!important;}
+  #proposalPaper .proposal-print-page-1{font-size:10.5px!important;}
+  #proposalPaper .proposal-print-page-1 .brandline{font-size:12px!important;}
+  #proposalPaper .proposal-print-page-1 h2{font-size:28px!important;line-height:1.08!important;margin:4mm 0 1mm!important;}
+  #proposalPaper .proposal-print-page-1 hr{margin:4.5mm 0!important;}
+  #proposalPaper .proposal-print-page-1 p{font-size:10.5px!important;line-height:1.48!important;margin:2.5mm 0!important;}
+  #proposalPaper .proposal-print-page-1 .proposal-grid{gap:12mm!important;}
+  #proposalPaper .proposal-print-page-1 .paper-includes-section>div[style*="display:grid"]{gap:7px!important;}
+  #proposalPaper .proposal-print-page-1 .paper-includes-section{top:0!important;}
+  #proposalPaper .proposal-print-page-1 .proposal-logo-wrap{top:12mm!important;right:14mm!important;width:58mm!important;height:21mm!important;margin:0!important;}
+  #proposalPaper .proposal-print-page-1 .proposal-logo-wrap img{max-width:48mm!important;max-height:18mm!important;}
+  #proposalPaper .proposal-print-page-1 .paper-scope-item{break-inside:avoid!important;page-break-inside:avoid!important;}
+  #proposalPaper .proposal-print-page-2{font-size:10.5px!important;}
+  #proposalPaper .proposal-print-page-2 hr{margin:5mm 0!important;}
+  #proposalPaper .proposal-print-page-2 .amount{font-size:28px!important;line-height:1.05!important;}
+  #proposalPaper .proposal-print-page-2 p{font-size:10.5px!important;line-height:1.5!important;margin:2.5mm 0!important;}
+  #proposalPaper .paper-payment-plan{gap:7px!important;}
+  #proposalPaper .paper-payment-choice-note{padding:7px 9px!important;margin:1px 0 6px!important;font-size:9px!important;line-height:1.4!important;}
+  #proposalPaper .paper-payment-choice-label{font-size:8px!important;margin:2px 0 5px!important;}
+  #proposalPaper .paper-payment-option{padding:8px 10px!important;border-radius:9px!important;}
+  #proposalPaper .paper-payment-option-head{padding-bottom:6px!important;}
+  #proposalPaper .paper-payment-option-title{font-size:10px!important;}
+  #proposalPaper .paper-payment-option-badge{font-size:7px!important;padding:3px 6px!important;}
+  #proposalPaper .paper-payment-row{padding:6px 0!important;font-size:9.5px!important;gap:3px 10px!important;}
+  #proposalPaper .paper-payment-row small{font-size:8px!important;}
+  #proposalPaper .paper-payment-total{font-size:8.5px!important;margin-top:5px!important;padding-top:6px!important;}
+  #proposalPaper .paper-payment-total strong{font-size:9.5px!important;}
+  #proposalPaper .proposal-print-page-2 #paperBankWrap p,#proposalPaper .proposal-print-page-2 #paperNotes{font-size:9.5px!important;line-height:1.45!important;}
+  #proposalPaper .proposal-print-page-2 #paperIdentityFooter{font-size:9px!important;line-height:1.45!important;}
+  #proposalPaper .proposal-print-page-2>.muted:last-child{font-size:8.5px!important;}
+  #proposalPaper .proposal-print-page> *{break-inside:auto!important;page-break-inside:auto!important;}
+  #proposalPaper .paper-payment-row,#proposalPaper .paper-payment-option{break-inside:avoid!important;page-break-inside:avoid!important;}
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><b>ARQFLOW</b><span>Precificação inteligente para projetos mais lucrativos.</span></div>
+  <nav class="nav">
+    <button data-page="dashboard"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span>Dashboard</span></button>
+    <button data-page="pricing"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16V8"/><path d="M12 16V5"/><path d="M18 16v-4"/></svg></span><span>Minha Precificação</span></button>
+    <button data-page="services"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/><path d="M18 17h2"/></svg></span><span>Meus Serviços</span></button>
+    <button data-page="budget"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8"/><path d="M8 12h5"/><path d="M8 16h4"/></svg></span><span>Novo Orçamento</span></button>
+    <button data-page="proposal"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4"/><path d="M9 13h6"/><path d="M9 17h4"/></svg></span><span>Proposta Comercial</span></button>
+    <button data-page="control">◫ &nbsp; Controle & Financeiro</button>
+  </nav>
+</aside>
+<main class="main" id="main"><div class="privacy-note" style="margin-top:22px;padding:11px 14px;border-radius:10px;background:#f6f3ed;border:1px solid #e8e1d5;color:#665f56;font-size:11px;line-height:1.5;"><strong>Privacidade:</strong> os dados informados nesta proposta são utilizados para elaboração, gestão e eventual execução da contratação, conforme a legislação aplicável de proteção de dados.</div>
+</main>
+</div>
+<div class="modal" id="modal"><div class="modal-box" id="modalBox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='arqflow_release_v4';
+// Versão de entrega: inicia sempre limpa para um novo profissional.
+try{localStorage.removeItem(KEY);}catch(e){}
+const baseInteriorService={
+ id:'base-interiores',
+ name:'Projeto de Interiores',
+ steps:[
+  {name:'Briefing e levantamento de necessidades',hours:6},
+  {name:'Levantamento / conferência de medidas',hours:8},
+  {name:'Estudo de layout e setorização',hours:12},
+  {name:'Conceito e referências visuais',hours:8},
+  {name:'Estudo preliminar',hours:16},
+  {name:'Modelagem 3D',hours:24},
+  {name:'Imagens / perspectivas para apresentação',hours:12},
+  {name:'Revisões e ajustes',hours:10},
+  {name:'Projeto executivo',hours:24},
+  {name:'Detalhamentos e especificações',hours:16},
+  {name:'Memorial / especificação de materiais',hours:8},
+  {name:'Apresentação e entrega final',hours:6}
+ ]
+};
+baseInteriorService.hours=baseInteriorService.steps.reduce((a,b)=>a+b.hours,0);
+
+const defaultProposalScope=[
+ {name:'Conceito e layout',description:'Briefing, estudo de layout e direção estética.'},
+ {name:'Projeto e apresentação',description:'Modelagem 3D e apresentação dos ambientes.'},
+ {name:'Detalhamento e entrega',description:'Desenhos técnicos e especificação de materiais.'}
+];
+const defaultState={
+ pricing:{prolabore:0,fixed:0,variable:0,hours:0,productive:0,tax:0,margin:0},
+ services:[],
+ budgets:[],
+ proposals:[],
+ payments:[],
+ paymentPlans:{},
+ logo:'',
+ proposalScopeTemplate:structuredClone(defaultProposalScope),
+ proposalIdentity:{architect:'',office:'',cau:'',address:''},
+ proposalTechnicalSupport:{enabled:false,value:0,description:''}
+};
+let state=load();
+state.pricing={...defaultState.pricing,...(state.pricing||{})};
+state.services=Array.isArray(state.services)?state.services:[];
+state.budgets=Array.isArray(state.budgets)?state.budgets:[];
+state.proposals=Array.isArray(state.proposals)?state.proposals:[];
+state.payments=Array.isArray(state.payments)?state.payments:[];
+state.paymentPlans=state.paymentPlans&&typeof state.paymentPlans==='object'?state.paymentPlans:{};
+state.paymentOptions=state.paymentOptions&&typeof state.paymentOptions==='object'?state.paymentOptions:{};
+state.proposalScopeTemplate=Array.isArray(state.proposalScopeTemplate)&&state.proposalScopeTemplate.length
+ ? state.proposalScopeTemplate.map((x,i)=>({name:String(x?.name||`Etapa ${i+1}`),description:String(x?.description||'')}))
+ : structuredClone(defaultProposalScope);
+if(!state.proposalScopeTemplate.some(x=>x.name.trim()&&x.description.trim())) state.proposalScopeTemplate=structuredClone(defaultProposalScope);
+state.proposalIdentity={...defaultState.proposalIdentity,...(state.proposalIdentity||{})};
+state.proposalTechnicalSupport={...defaultState.proposalTechnicalSupport,...(state.proposalTechnicalSupport||{})};
+if(!state.proposalTechnicalSupport.description) state.proposalTechnicalSupport.description=defaultTechnicalSupportDescription();
+state.proposalScopeTemplate=state.proposalScopeTemplate.length?state.proposalScopeTemplate:structuredClone(defaultProposalScope);
+normalizeState();
+function load(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY)||'{}');
+  const loaded={...defaultState,...saved};
+  loaded.services=Array.isArray(saved.services)?saved.services:[...defaultState.services];
+  if(!loaded.services.some(s=>s.id==='base-interiores')) loaded.services=[baseInteriorService,...loaded.services];
+  return loaded;
+ }catch(e){return structuredClone(defaultState)}
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function parseNumber(value){
+ const n=Number(value);
+ if(typeof value==='number') return Number.isFinite(value)?value:0;
+ if(value===null||value===undefined||String(value).trim()==='') return 0;
+ let s=String(value).trim().replace(/\s/g,'');
+ if(s.includes('.') && s.includes(',')) s=s.replace(/\./g,'').replace(',','.');
+ else if(s.includes(',')) s=s.replace(',','.');
+ else if(/^[-+]?\d{1,3}(?:\.\d{3})+$/.test(s)) s=s.replace(/\./g,'');
+ const parsed=Number(s);
+ return Number.isFinite(parsed)?parsed:0;
+}
+function round2(v){const n=parseNumber(v);return Math.round(n*100)/100}
+function money(v){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(parseNumber(v))}
+function dateBR(v){if(!v)return '—';return new Date(v+'T12:00:00').toLocaleDateString('pt-BR')}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2400)}
+function pageHeader(kicker,title,desc,action=''){return `<div class="topbar"><div><div class="eyebrow">${kicker}</div><h1>${title}</h1><div class="muted" style="font-size:13px;margin-top:5px">${desc}</div></div>${action}</div>`}
+function calcPricing(p=state.pricing){
+ const n=k=>Math.max(0,parseNumber(p?.[k]));
+ const prolabore=n('prolabore');
+ const fixed=n('fixed');
+ const variable=n('variable');
+ const hours=n('hours');
+ const productive=Math.min(100,n('productive'));
+ const tax=Math.min(99.99,n('tax'));
+ const margin=n('margin');
+ const base=prolabore+fixed+variable;
+ const productiveHours=hours*(productive/100);
+ const before=productiveHours>0?base/productiveHours:0;
+ const taxRate=tax/100;
+ const marginRate=Math.min(99.99,margin)/100;
+ const afterTax=tax<100?before/(1-taxRate):0;
+ const denominator=1-taxRate-marginRate;
+ const final=denominator>0?before/denominator:0;
+ const floor=afterTax;
+ const ceiling=final>0?final*1.25:0;
+ return {base:round2(base),productiveHours:round2(productiveHours),before:round2(before),afterTax:round2(afterTax),final:round2(final),floor:round2(floor),ceiling:round2(ceiling)};
+}
+function render(page='dashboard'){
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ const main=document.getElementById('main');
+ if(page==='dashboard') main.innerHTML=dashboard();
+ if(page==='pricing') main.innerHTML=pricing();
+ if(page==='services') main.innerHTML=services();
+ if(page==='budget') main.innerHTML=budget();
+ if(page==='proposal') main.innerHTML=proposal();
+ if(page==='control') main.innerHTML=control();
+ bind();
+}
+function getInstallmentPaid(bid,index){
+ return round2(state.payments
+   .filter(p=>p.budgetId===bid && Number(p.installmentIndex)===Number(index) && p.status==='RECEBIDO')
+   .reduce((a,p)=>a+(Number(p.amount)||0),0));
+}
+function getInstallmentInfo(bid,index,item){
+ const total=round2(item?.amount||0), paid=getInstallmentPaid(bid,index);
+ const balance=round2(Math.max(0,total-paid));
+ const due=item?.due||'';
+ let status=balance<=0.009?'RECEBIDO':'EM ABERTO';
+ if(status!=='RECEBIDO' && due){
+   const today=localDateISO();
+   if(due<today) status='VENCIDO';
+ }
+ return {total,paid,balance,due,status};
+}
+function getReceivableTotals(){
+ let open=0, overdue=0, received=0;
+ state.budgets.forEach(b=>{
+   const plan=getPlan(b.id);
+   plan.forEach((item,i)=>{
+     const info=getInstallmentInfo(b.id,i,item);
+     received+=info.paid;
+     if(info.status==='VENCIDO') overdue+=info.balance;
+     else if(info.status==='EM ABERTO') open+=info.balance;
+   });
+ });
+ return {open,overdue,received,receivable:round2(open+overdue)};
+}
+function getPaymentRows(){
+ const rows=[];
+ state.budgets.forEach(b=>{
+   getPlan(b.id).forEach((item,i)=>{
+     if(!item || !(Number(item.amount)||0)) return;
+     const info=getInstallmentInfo(b.id,i,item);
+     rows.push({budget:b,installmentIndex:i,item,info});
+   });
+ });
+ return rows;
+}
+function getBudgetRange(b){
+ const saved=b?.range;
+ if(saved && typeof saved==='object' && [saved.min,saved.estimated,saved.max].every(v=>v!==undefined)) return {min:round2(saved.min),estimated:round2(saved.estimated),max:round2(saved.max)};
+ const pricing=calcPricing();
+ const hours=round2(b?.hours||0);
+ return {min:round2(hours*pricing.floor),estimated:round2(b?.value||hours*pricing.final),max:round2(hours*pricing.ceiling)};
+}
+
+
+function pricingField(id,label,value){
+  const v=(value===0||value===null||value===undefined)?'':value;
+  return `<div class="field"><label>${esc(label)}</label><input id="${esc(id)}" type="number" value="${esc(v)}" placeholder="0" step="0.01" min="0" inputmode="decimal"></div>`;
+}
+
+function services(){
+  return pageHeader('Estrutura','Meus Serviços','Crie e organize os serviços, etapas e horas que serão usados nos seus orçamentos.',
+    '<button class="btn btn-olive" id="newService">＋ Novo serviço</button>')+
+    `<div class="grid cards" style="margin-top:18px">${state.services.map(s=>{
+      const steps=Array.isArray(s.steps)?s.steps:[];
+      const hours=round2(steps.reduce((a,x)=>a+parseNumber(x.hours),0));
+      return `<div class="card"><div class="service-head"><div><h3>${esc(s.name)}</h3><div class="muted" style="font-size:11px;margin-top:5px">${steps.length} etapa(s) · ${hours} horas</div></div><span class="tag">SERVIÇO</span></div>
+      <div class="etapas">${steps.length?steps.map((e,i)=>`<div class="etapa"><span>${i+1}. ${esc(e.name)}</span><strong>${round2(e.hours)}h</strong></div>`).join(''):'<div class="empty">Nenhuma etapa cadastrada.</div>'}</div>
+      <div class="actions"><button class="btn btn-light editService" data-id="${esc(s.id)}">Editar</button>${s.id!=='base-interiores'?`<button class="btn btn-danger deleteService" data-id="${esc(s.id)}">Excluir</button>`:''}</div></div>`;
+    }).join('')}</div>`;
+}
+
+function normalizeState(){
+  state.pricing={...defaultState.pricing,...(state.pricing||{})};
+  ['prolabore','fixed','variable','hours','productive','tax','margin'].forEach(k=>state.pricing[k]=parseNumber(state.pricing[k]));
+  state.services=(Array.isArray(state.services)?state.services:[]).map(s=>({
+    ...s,
+    id:String(s.id||id()), name:String(s.name||'Serviço sem nome'),
+    steps:(Array.isArray(s.steps)?s.steps:[]).map(e=>({name:String(e.name||''),hours:round2(e.hours)})).filter(e=>e.name)
+  }));
+  if(!state.services.some(s=>s.id==='base-interiores')) state.services.unshift(baseInteriorService);
+  state.services.forEach(s=>s.hours=round2(s.steps.reduce((a,e)=>a+parseNumber(e.hours),0)));
+  state.budgets=(Array.isArray(state.budgets)?state.budgets:[]).map(b=>({...b,id:String(b.id||id()),value:round2(b.value),hours:round2(b.hours),client:String(b.client||''),project:String(b.project||''),service:String(b.service||''),status:String(b.status||'ENVIADO'),steps:Array.isArray(b.steps)?b.steps:[]}));
+  state.proposals=Array.isArray(state.proposals)?state.proposals:[];
+  state.payments=(Array.isArray(state.payments)?state.payments:[]).map(p=>({...p,amount:round2(p.amount)}));
+  state.paymentPlans=state.paymentPlans&&typeof state.paymentPlans==='object'?state.paymentPlans:{};
+  state.proposalScopeTemplate=Array.isArray(state.proposalScopeTemplate)?state.proposalScopeTemplate.map(x=>({
+    name:String(x.name||''),description:String(x.description||''),deadline:String(x.deadline||''),conditions:String(x.conditions||'')
+  })).filter(x=>x.name||x.description||x.deadline||x.conditions):[];
+}
+
+function localDateISO(){
+  const d=new Date();
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+function dashboard(){
+ const p=calcPricing(), bs=state.budgets;
+ const negotiation=bs.filter(b=>b.status==='EM NEGOCIAÇÃO').reduce((a,b)=>a+b.value,0);
+ const approved=bs.filter(b=>b.status==='APROVADO').reduce((a,b)=>a+b.value,0);
+ const totals=getReceivableTotals();
+ const stages=['ENVIADO','EM NEGOCIAÇÃO','APROVADO','PERDIDO'];
+ return pageHeader('Visão geral','Dashboard','Seu escritório, seus números e seus projetos em uma única visão.','<button class="btn btn-dark" data-go="budget">＋ Novo orçamento</button>')+
+ `<section class="hero"><div><div class="eyebrow" style="color:#85837C">ARQFLOW</div><h2><span class="tagline-fina">Tenha clareza sobre o que cobrar, vender e receber.</span></h2><p>Precifique com estratégia, acompanhe seu funil e transforme seus orçamentos em propostas profissionais.</p></div><button class="btn" data-go="pricing">Configurar precificação</button></section>
+ <div class="grid kpis">
+ <div class="card kpi"><div class="label">VALOR/HORA RECOMENDADO</div><div class="value">${money(p.final)}</div><div class="sub">Base da sua precificação</div></div>
+ <div class="card kpi"><div class="label">EM NEGOCIAÇÃO</div><div class="value">${money(negotiation)}</div><div class="sub">${bs.filter(b=>b.status==='EM NEGOCIAÇÃO').length} orçamento(s)</div></div>
+ <div class="card kpi"><div class="label">A RECEBER</div><div class="value">${money(totals.receivable)}</div><div class="sub">Valores em aberto</div></div>
+ <div class="card kpi"><div class="label">RECEBIDO</div><div class="value">${money(totals.received)}</div><div class="sub">${money(totals.receivable)} ainda a receber</div></div>
+ </div>
+ <div class="section-title"><h3>Funil comercial</h3><span>Valor aprovado: <strong>${money(approved)}</strong></span></div>
+ <div class="card funnel">${stages.map(s=>`<div class="stage"><b>${bs.filter(b=>b.status===s).length}</b><small>${s}</small></div>`).join('')}</div>
+ `;
+}
+
+function pricing(){
+ const p=state.pricing,c=calcPricing();
+  return pageHeader('Estratégia','Minha Precificação','Defina quanto seu escritório precisa faturar e quanto cobrar pelos seus projetos.')+
+ `<div class="grid two"><div class="card"><div class="form pricing-form">
+ ${pricingField('prolabore','Pró-labore mensal',p.prolabore)}
+ ${pricingField('fixed','Custos fixos mensais',p.fixed)}
+ ${pricingField('variable','Custos variáveis mensais',p.variable)}
+ ${pricingField('hours','Horas disponíveis / mês',p.hours)}
+ ${pricingField('productive','Percentual produtivo (%)',p.productive)}
+ <div class="field-help"><strong>Horas realmente faturáveis</strong><span>Nem toda hora disponível vira trabalho pago. Reuniões, administrativo, vendas e organização ocupam parte do mês. O percentual produtivo estima quanto do seu tempo pode ser vendido em projetos.</span><div class="benchmark-tip"><b>Diretriz inicial: 65%</b><small>Como ponto de partida, use 65%. Benchmarks de escritórios de arquitetura e engenharia apontam utilização média próxima de 64%; a AIA reportou meta média de 77,5% para equipes de design. Para um escritório solo, 60–70% é uma faixa mais prudente para começar.</small></div></div>
+ ${pricingField('tax','Impostos (%)',p.tax)}
+ ${pricingField('margin','Margem desejada (%)',p.margin)}
+ <div class="field-help"><strong>Margem desejada</strong><span>Define quanto você quer gerar de lucro depois de cobrir os custos e impostos.</span><div class="benchmark-tip"><b>Diretriz inicial: 20%</b><small>Use 20% como referência de partida. O Sebrae cita cerca de 20% sobre as vendas como expectativa de remuneração para atividades de serviços; benchmarks internacionais de arquitetura/engenharia reportam margem média próxima de 19,9%, com empresas do quartil superior chegando a 33%.</small></div></div>
+ </div><div class="actions"><button class="btn btn-olive" id="savePricing">Salvar precificação</button></div></div>
+ <div class="result" style="display:flex;flex-direction:column;justify-content:center;min-height:260px;text-align:center">
+   <div class="eyebrow" style="color:#85837C">VALOR CALCULADO</div>
+   <div id="pricingResult" class="big" style="font-size:48px;margin-top:12px">${money(c.final)}<span style="font-size:15px;font-weight:600"> / hora</span></div>
+   <div id="pricingMeta" style="color:#8D5D49;font-size:13px;line-height:1.6;margin-top:8px">${c.final>0?`${c.productiveHours.toFixed(1)}h faturáveis/mês · base ${money(c.before)}/h · após impostos ${money(c.afterTax)}/h`:'Preencha horas disponíveis e percentual produtivo para calcular o valor/hora.'}</div>
+ </div></div>`;
+}
+function field(id,label,type,value,full=false){
+ const v=(value===0||value===null||value===undefined)?'':value;
+ return `<div class="field ${full?'full':''}"><label>${label}</label><input id="${id}" type="${type}" value="${esc(v)}" placeholder="${type==='number'?'0':''}" step="${type==='number'?'0.01':'1'}" ${type==='number'?'inputmode="decimal"':''}></div>`
+}
+function budget(){
+ const p=calcPricing(), chosen=state.budgets.length?state.budgets[state.budgets.length-1]:null;
+ return pageHeader('Comercial','Novo Orçamento','Transforme horas e etapas em uma oportunidade comercial.')+
+ `<div class="grid two"><div class="card"><div class="form">
+ ${field('clientName','Cliente','text','')}
+ ${field('project','Nome do projeto','text','')}
+ <div class="field"><label>Serviço</label><select id="serviceSelect"><option value="">Selecione...</option>${state.services.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+ <div class="field"><label>Complexidade</label><select id="complexity"><option value="0.85">Baixa — 85%</option><option value="1" selected>Média — 100%</option><option value="1.25">Alta — 125%</option><option value="1.5">Muito alta — 150%</option></select></div>
+ </div><div id="stepsBox" style="margin-top:20px"><div class="empty">Selecione um serviço para carregar as etapas.</div></div>
+ <div class="actions"><button class="btn btn-dark" id="saveBudget">Salvar orçamento</button></div></div>
+ <div class="result">
+ <div class="eyebrow" style="color:#788A72">FAIXA DE NEGOCIAÇÃO</div>
+ <div class="big" id="budgetValue">${money(0)}</div>
+ <div id="budgetMeta" style="color:#6F6E68;font-size:13px">Selecione um serviço e as etapas.</div>
+ <div id="budgetRange" class="budget-range" style="margin-top:18px">
+   <div><span>Mínimo</span><strong id="budgetMin">${money(0)}</strong><small>Não trabalhar abaixo deste valor</small></div>
+   <div><span>Estimado</span><strong id="budgetEstimated">${money(0)}</strong><small>Com sua margem desejada</small></div>
+   <div><span>Máximo sugerido</span><strong id="budgetMax">${money(0)}</strong><small>Margem para negociar para cima</small></div>
+ </div>
+ <hr style="border:0;border-top:1px solid #DDD9D0;margin:20px 0">
+ <div>Valor/hora estimado <strong style="float:right">${money(p.final)}</strong></div>
+ <div class="note" style="margin-top:12px">O mínimo cobre a estrutura calculada e os impostos. O estimado aplica sua margem desejada. O máximo sugerido é uma referência comercial, não um limite de mercado.</div>
+ </div></div>`;
+}
+let proposalSelectedBudgetId=null;
+
+function proposalDefaultScope(b,prop){
+ const saved=Array.isArray(prop?.scopeItems)?prop.scopeItems:[];
+ if(saved.length)return saved.map((x,i)=>({name:String(x.name||`Etapa ${i+1}`),description:String(x.description||'')}));
+ const template=Array.isArray(state.proposalScopeTemplate)?state.proposalScopeTemplate:[];
+ if(state.proposalScopeTemplateCustomized && template.length){
+   return template.map((x,i)=>({name:String(x.name||`Etapa ${i+1}`),description:String(x.description||'')}));
+ }
+ return structuredClone(defaultProposalScope);
+}
+function scopeRowHTML(x={},i=0){
+ return `<div class="scope-edit-row" style="border:1px solid #E9E8E3;border-radius:10px;padding:12px;background:#FCFCFA">
+   <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px"><strong style="font-size:12px;color:#5F625E">Etapa ${i+1}</strong><button type="button" class="btn btn-danger removeScope" style="padding:6px 9px;font-size:11px">Excluir etapa</button></div>
+   <div style="display:grid;grid-template-columns:1fr 1.7fr;gap:10px">
+    <div class="field"><label>Nome da etapa</label><input class="scope-name" type="text" value="${esc(x.name||'')}" placeholder="Ex.: Levantamento (Medição)"></div>
+    <div class="field"><label>Descrição do escopo</label><textarea class="scope-description" rows="2" placeholder="Descreva o que será realizado nesta etapa.">${esc(x.description||'')}</textarea></div>
+   </div>
+  </div>`;
+}
+function renderScopeEditor(items){
+ const list=(Array.isArray(items)&&items.length&&items.some(x=>String(x?.name||'').trim()))?items:structuredClone(defaultProposalScope);
+ return `<div id="scopeEditor" style="display:grid;gap:10px">
+   ${list.length?list.map((x,i)=>scopeRowHTML(x,i)).join(''):`<div id="scopeEmptyState" class="empty" style="margin:0;padding:18px">Nenhuma etapa adicionada ainda.<br><span style="font-size:11px">Clique em “Adicionar etapa do seu escopo” para incluir uma etapa.</span></div>`}
+   <button type="button" class="btn btn-light" id="addScopeStage">＋ Adicionar etapa do seu escopo</button>
+ </div>`;
+}
+function readScopeEditor(){
+ return [...document.querySelectorAll('#scopeEditor .scope-edit-row')].map(r=>({
+   name:r.querySelector('.scope-name')?.value.trim()||'',
+   description:r.querySelector('.scope-description')?.value.trim()||''
+ })).filter(x=>x.name||x.description);
+}
+function saveScopeTemplate(){
+ if(!document.getElementById('scopeEditor'))return;
+ const items=readScopeEditor();
+ state.proposalScopeTemplate=items.length?items:structuredClone(defaultProposalScope);
+ state.proposalScopeTemplateCustomized=true;
+ save();
+}
+function syncScopeTemplateAndPreview(){
+ saveScopeTemplate();
+ updateProposalPreview();
+}
+function addScopeStage(){
+ const editor=document.getElementById('scopeEditor');
+ if(!editor)return;
+ const empty=document.getElementById('scopeEmptyState');
+ if(empty)empty.remove();
+ const addButton=document.getElementById('addScopeStage');
+ const row=document.createElement('div');
+ row.innerHTML=scopeRowHTML({},editor.querySelectorAll('.scope-edit-row').length);
+ const node=row.firstElementChild;
+ if(node)editor.insertBefore(node,addButton);
+ renumberScopeStages();
+ bindScopeEditorEvents();
+ const input=node?.querySelector('.scope-name');
+ input?.focus();
+ saveScopeTemplate();
+ updateProposalPreview();
+}
+function renumberScopeStages(){
+ document.querySelectorAll('#scopeEditor .scope-edit-row').forEach((row,i)=>{
+   const label=row.querySelector('strong');
+   if(label)label.textContent=`Etapa ${i+1}`;
+ });
+}
+function bindScopeEditorEvents(){
+ const editor=document.getElementById('scopeEditor');
+ if(!editor)return;
+ if(editor.dataset.bound==='1')return;
+ editor.dataset.bound='1';
+ editor.addEventListener('input',()=>syncScopeTemplateAndPreview());
+ editor.addEventListener('change',()=>syncScopeTemplateAndPreview());
+ editor.addEventListener('click',e=>{
+   const add=e.target.closest('#addScopeStage');
+   if(add){addScopeStage();return;}
+   const remove=e.target.closest('.removeScope');
+   if(remove){
+     remove.closest('.scope-edit-row')?.remove();
+     renumberScopeStages();
+     if(!editor.querySelector('.scope-edit-row')){
+       const empty=document.createElement('div');
+       empty.id='scopeEmptyState';
+       empty.className='empty';
+       empty.style.cssText='margin:0;padding:18px';
+       empty.innerHTML='Nenhuma etapa adicionada ainda.<br><span style="font-size:11px">Clique em “Adicionar etapa do seu escopo” para montar a estrutura da proposta.</span>';
+       editor.insertBefore(empty,document.getElementById('addScopeStage'));
+     }
+     syncScopeTemplateAndPreview();
+   }
+ });
+}
+
+function defaultInclusos(){return 'Número de revisões permitidas em cada etapa, reuniões de alinhamento e acompanhamento básico.';}
+function defaultNaoInclusos(){return 'Custos de execução de obra, compras de materiais, taxas de órgãos públicos ou projetos complementares (como estrutural ou ar-condicionado complexo) se não combinados.';}
+function defaultTechnicalSupportDescription(){return 'Acompanhamento da execução da obra, garantindo que os serviços sigam o projeto e suas especificações.\n\nInclui suporte técnico, contato com fornecedores e prestadores, análise de orçamentos, acompanhamento de compras e auxílio na escolha de materiais e mobiliário.\n\nContratação mensal até a conclusão da obra ou encerramento pelo cliente.';}
+function proposalIdentityText(){
+ const x=state.proposalIdentity||{};
+ return [x.architect,x.office,x.cau?`CAU ${x.cau}`:'',x.address].filter(Boolean).join(' | ');
+}
+
+function proposal(){
+ const selectedId=proposalSelectedBudgetId;
+ const b=(selectedId && state.budgets.find(x=>x.id===selectedId)) || (state.budgets.length?state.budgets[state.budgets.length-1]:null);
+ if(b) proposalSelectedBudgetId=b.id;
+ if(!b)return pageHeader('Apresentação','Proposta Comercial','Transforme um orçamento salvo em uma apresentação profissional.')+`<div class="empty">Nenhum orçamento disponível. <button class="btn btn-dark" data-go="budget">Criar orçamento</button></div>`;
+ const prop=state.proposals.find(x=>x.budgetId===b.id)||{};
+ return pageHeader('Apresentação','Proposta Comercial','Personalize e gere a proposta baseada no orçamento selecionado.','')+
+ `<div class="card no-print" style="margin-bottom:18px"><div class="eyebrow" style="color:#788A72">IDENTIDADE VISUAL</div><div style="font-size:13px;font-weight:700;margin-top:6px">Logo do escritório</div><div class="note" style="margin:5px 0 12px">Envie seu logo em PNG. Ele aparecerá de forma discreta e elegante no cabeçalho da proposta comercial.</div><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><input id="logoFile" type="file" accept="image/png" style="max-width:100%;font-size:12px"><button class="btn btn-light" type="button" id="removeLogo">Remover logo</button><span id="logoStatus" class="muted" style="font-size:11px">${state.logo?'Logo carregado':'Nenhum logo carregado'}</span></div></div>`+
+ `<div class="card no-print" style="margin-bottom:18px"><div class="form">
+ ${field('propArchitect','Nome do arquiteto','text',state.proposalIdentity.architect||'')}
+ ${field('propOffice','Nome do escritório','text',state.proposalIdentity.office||'')}
+ ${field('propCAU','CAU','text',state.proposalIdentity.cau||'')}
+ ${field('propAddress','Endereço comercial (opcional)','text',state.proposalIdentity.address||'')}
+ <div class="field full"><div class="note">Esses dados ficam salvos automaticamente e aparecem no rodapé das próximas propostas.</div></div>
+ <div class="field"><label>Orçamento</label><select id="proposalBudget">${state.budgets.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(x.client)} — ${esc(x.service)} — ${money(x.value)}</option>`).join('')}</select></div>
+ ${field('propDate','Data de envio','date',prop.date||localDateISO())}
+ ${field('propValidity','Validade (dias)','number',prop.validity||10)}
+ ${field('propTitle','Título','text',prop.title||'Proposta Comercial')}
+ ${field('propName','Nome do cliente','text',prop.name||b.client)}
+ ${field('propEmail','E-mail','email',prop.email||'')}
+ ${field('propPhone','Telefone','text',prop.phone||'')}
+ ${field('propIntro','Mensagem inicial','text',prop.intro||'Será um prazer desenvolver este projeto com você. Esta proposta apresenta o escopo, as etapas e as condições comerciais para a realização do serviço.',true)}
+ <div class="field full"><label>Escopo do projeto</label><div class="note" style="margin:5px 0 10px">Este é o escopo base da proposta. Altere as etapas e descrições conforme o serviço, exclua o que não fizer sentido ou adicione novas etapas. O modelo fica salvo automaticamente para as próximas propostas.</div>${renderScopeEditor(proposalDefaultScope(b,prop))}</div>
+ <div class="field full"><label>Acompanhamento técnico</label><div style="display:flex;align-items:center;gap:10px;margin:7px 0 10px"><label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;cursor:pointer"><input type="checkbox" id="propTechnicalEnabled" ${((prop.technicalSupport?.enabled ?? state.proposalTechnicalSupport.enabled)?'checked':'')}> Incluir acompanhamento técnico na proposta</label></div><div id="technicalSupportEditor" style="display:${((prop.technicalSupport?.enabled ?? state.proposalTechnicalSupport.enabled)?'grid':'none')};gap:10px"><div class="field"><label>Valor mensal</label><input id="propTechnicalValue" type="number" min="0" step="0.01" value="${esc(prop.technicalSupport?.value ?? state.proposalTechnicalSupport.value ?? 0)}" placeholder="0"></div><div class="field"><label>O que é o acompanhamento técnico?</label><textarea id="propTechnicalDescription" rows="7" placeholder="Explique o serviço...">${esc(prop.technicalSupport?.description || state.proposalTechnicalSupport.description || defaultTechnicalSupportDescription())}</textarea></div></div></div>
+ ${field('propInclusos','Inclusos','text',prop.inclusos||defaultInclusos(),true)}
+ ${field('propNaoInclusos','Exclusivos / Não inclusos','text',prop.naoInclusos||defaultNaoInclusos(),true)}
+ <div class="field full"><label>Valor total da proposta</label><div class="value-reference-grid" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:12px;align-items:stretch"><input id="propValue" type="number" value="${esc(prop.totalValue??b.value)}" placeholder="0" step="0.01" inputmode="decimal" style="font-size:15px;font-weight:700;min-width:0"><div style="border:1px solid #E9E9E4;border-radius:11px;background:#F7F7F4;padding:10px 12px;min-width:0"><div style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#777970;margin-bottom:7px">Referência do orçamento</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div><div style="font-size:10px;color:#858680">Mínimo</div><strong id="budgetRefMin" style="font-size:12px">${money(getBudgetRange(b).min)}</strong></div><div><div style="font-size:10px;color:#858680">Estimado</div><strong id="budgetRefEstimated" style="font-size:12px">${money(getBudgetRange(b).estimated)}</strong></div><div><div style="font-size:10px;color:#858680">Máximo</div><strong id="budgetRefMax" style="font-size:12px">${money(getBudgetRange(b).max)}</strong></div></div><div style="font-size:10px;color:#858680;margin-top:7px">Use esta faixa como referência ao definir o valor final da proposta.</div></div></div></div>
+ ${field('propBank','Dados bancários / instruções de pagamento','text',prop.bankDetails||'',true)}
+ <div class="field full"><label>Condições de pagamento</label><div class="note" style="margin:5px 0 10px">A primeira opção é à vista. Adicione outras opções de pagamento caso queira oferecer alternativas ao cliente.</div><div id="paymentOptionsBox"></div><button type="button" class="btn btn-light" id="addPaymentOption" style="margin-top:10px">＋ Adicionar outra opção de pagamento</button></div>
+ ${field('propNotes','Condições especiais / observações','text',prop.notes||'',true)}
+ </div><div class="actions"><button class="btn btn-olive" id="saveProposal">Salvar / Gerar PDF</button></div></div>
+ <div class="proposal" id="proposalPaper"><div class="proposal-print-page proposal-print-page-1"><div class="proposal-logo-wrap" id="proposalLogoWrap" style="${state.logo?'':'display:none'}"><img id="proposalLogo" src="${state.logo||''}" alt="Logo do escritório"></div><div class="brandline">ARQFLOW</div><div class="muted" style="font-size:11px;margin-top:5px">PROPOSTA COMERCIAL</div>
+<h2 id="paperTitle">${esc(prop.title||'Proposta Comercial')}</h2><div class="muted" id="paperDate">${dateBR(prop.date||localDateISO())}</div>
+ <hr><div class="proposal-grid"><div><div class="eyebrow">CLIENTE</div><p id="paperName">${esc(prop.name||b.client)}</p><p class="muted" id="paperContact">${esc(prop.email||'')} ${prop.phone?' · '+esc(prop.phone):''}</p></div><div><div class="eyebrow">SERVIÇO</div><p>${esc(b.service)}</p><p class="muted">Projeto: ${esc(b.project||'—')}</p></div></div>
+ <hr><div class="eyebrow">APRESENTAÇÃO</div><p id="paperIntro" style="line-height:1.7">${esc(prop.intro||'Será um prazer desenvolver este projeto com você. Esta proposta apresenta o escopo, as etapas e as condições comerciais para a realização do serviço.')}</p>
+ <hr><div class="eyebrow">ESCOPO DO PROJETO</div><div id="paperScope" style="margin-top:10px"></div>
+ <div id="paperTechnicalWrap" style="display:none"><hr><div class="eyebrow">ACOMPANHAMENTO TÉCNICO</div><div style="margin-top:10px"><div style="font-size:11px;color:#777970;margin-bottom:4px">VALOR MENSAL</div><div id="paperTechnicalValue" style="font-size:18px;font-weight:800;margin-bottom:10px"></div><div id="paperTechnicalDescription" style="font-size:12px;line-height:1.75;color:#41433F;white-space:pre-line"></div></div></div>
+ <div class="paper-includes-section"><hr><div class="eyebrow">O QUE ESTÁ E O QUE NÃO ESTÁ INCLUSO</div><div style="display:grid;gap:12px;margin-top:10px"><div><strong style="font-size:12px">Inclusos</strong><p id="paperInclusos" style="line-height:1.7;margin-top:5px">${esc(prop.inclusos||defaultInclusos())}</p></div><div><strong style="font-size:12px">Exclusivos / Não inclusos</strong><p id="paperNaoInclusos" style="line-height:1.7;margin-top:5px">${esc(prop.naoInclusos||defaultNaoInclusos())}</p></div></div></div>
+ </div><div class="proposal-print-page proposal-print-page-2"><hr><div class="eyebrow">INVESTIMENTO E CONDIÇÕES DE PAGAMENTO</div><div class="amount" id="paperValue">${money(prop.totalValue??b.value)}</div><p class="muted">Validade: <span id="paperValidity">${prop.validity||10}</span> dias</p><div id="paperPayment" class="paper-payment-plan" style="margin-top:12px"></div><div id="paperBankWrap" style="${prop.bankDetails?'':'display:none'};margin-top:12px"><strong style="font-size:12px">Dados bancários / instruções de pagamento</strong><p id="paperBank" style="line-height:1.7;margin-top:5px">${esc(prop.bankDetails||'')}</p></div>
+ <div id="paperNotesWrap" style="${prop.notes?'':'display:none'}"><hr><div class="eyebrow">OBSERVAÇÕES</div><p id="paperNotes" style="line-height:1.7">${esc(prop.notes||'')}</p></div>
+ <hr><div id="paperIdentityFooter" style="text-align:center;font-size:11px;line-height:1.6;color:#5f625e;font-weight:600">${esc(proposalIdentityText())}</div><div class="muted" style="font-size:11px;margin-top:7px;text-align:center">Documento gerado pelo ARQFLOW · Precificação inteligente para projetos mais lucrativos.</div></div></div>
+<div class="preview-overlay" id="proposalPreviewModal" aria-hidden="true">
+  <div class="preview-dialog" role="dialog" aria-modal="true" aria-labelledby="proposalPreviewTitle">
+    <div class="preview-toolbar">
+      <strong id="proposalPreviewTitle">Pré-visualização da proposta</strong>
+      <div class="actions">
+        <button type="button" class="btn btn-light" id="closeProposalPreview">Fechar</button>
+        <button type="button" class="btn btn-dark" id="previewPrintProposal">Salvar / gerar PDF</button>
+      </div>
+    </div>
+    <div class="preview-stage" id="proposalPreviewStage"></div>
+  </div>
+</div>`;
+}
+function control(){
+ const bs=state.budgets;
+ const approved=bs.filter(b=>b.status==='APROVADO').reduce((a,b)=>a+b.value,0);
+ const totals=getReceivableTotals();
+ const rows=getPaymentRows();
+ return pageHeader('Gestão','Controle & Financeiro','Acompanhe o funil comercial, valores aprovados e recebimentos.')+
+ `<div class="grid kpis">
+   <div class="card kpi"><div class="label">ORÇAMENTOS</div><div class="value">${bs.length}</div><div class="sub">Total cadastrados</div></div>
+   <div class="card kpi"><div class="label">EM NEGOCIAÇÃO</div><div class="value">${bs.filter(b=>b.status==='EM NEGOCIAÇÃO').length}</div><div class="sub">${money(bs.filter(b=>b.status==='EM NEGOCIAÇÃO').reduce((a,b)=>a+b.value,0))}</div></div>
+   <div class="card kpi"><div class="label">APROVADOS</div><div class="value">${money(approved)}</div><div class="sub">${bs.filter(b=>b.status==='APROVADO').length} projeto(s)</div></div>
+   <div class="card kpi"><div class="label">A RECEBER</div><div class="value">${money(totals.receivable)}</div><div class="sub">Saldo das parcelas abertas</div></div>
+ </div>
+ <div class="section-title"><h3>Orçamentos</h3></div><div class="card">${bs.length?`<table><thead><tr><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th></tr></thead><tbody>${bs.map(b=>`<tr><td><strong>${esc(b.client)}</strong><div class="muted" style="font-size:9px;margin-top:3px">${esc(b.project||'—')}</div></td><td>${esc(b.service)}</td><td>${money(b.value)}</td><td><select class="statusSelect" data-id="${b.id}">${['ENVIADO','EM NEGOCIAÇÃO','APROVADO','PERDIDO'].map(s=>`<option ${s===b.status?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table>`:`<div class="empty">Nenhum orçamento cadastrado.</div>`}</div>
+ <div class="section-title"><h3>Contas a receber</h3><span>Todos os registros de recebimento ficam concentrados aqui.</span></div>
+ <div class="grid kpis finance-kpis">
+   <div class="card kpi"><div class="label">A RECEBER</div><div class="value">${money(totals.receivable)}</div><div class="sub">Em aberto + vencido</div></div>
+   <div class="card kpi"><div class="label">RECEBIDO</div><div class="value">${money(totals.received)}</div><div class="sub">Recebimentos registrados</div></div>
+   <div class="card kpi"><div class="label">EM ABERTO</div><div class="value">${money(totals.open)}</div><div class="sub">Dentro do prazo</div></div>
+   <div class="card kpi"><div class="label">VENCIDO</div><div class="value">${money(totals.overdue)}</div><div class="sub">Parcelas vencidas</div></div>
+ </div>
+ <div class="card finance-panel">
+   <div class="finance-toolbar"><div><strong>Recebimentos</strong><div class="note">O sistema calcula automaticamente o saldo de cada parcela e reduz o valor conforme os recebimentos registrados.</div></div>
+     <select id="paymentFilter" class="finance-filter"><option value="TODOS">Todos</option><option value="EM ABERTO">Em aberto</option><option value="VENCIDO">Vencidos</option><option value="RECEBIDO">Recebidos</option></select>
+   </div>
+   ${rows.length?`<div class="finance-list">${rows.map(r=>{
+      const status=r.info.status, label=status==='RECEBIDO'?'Recebido ✓':status==='VENCIDO'?'Vencido':'Registrar recebimento';
+      return `<div class="payment-row" data-payment-status="${status}">
+        <div class="payment-main"><div class="payment-client">${esc(r.budget.client)}</div><div class="payment-meta">${esc(r.item.description||`Parcela ${r.installmentIndex+1}`)} · ${r.info.due?'Vencimento '+dateBR(r.info.due):'Sem vencimento definido'}</div></div>
+        <div class="payment-amount">${money(status==='RECEBIDO'?r.info.paid:r.info.balance)}</div>
+        <span class="status ${status==='RECEBIDO'?'s-aprovado':status==='VENCIDO'?'s-perdido':'s-negociacao'}">${status}</span>
+        <button class="btn ${status==='RECEBIDO'?'btn-light':'btn-olive'} addPayment" data-id="${r.budget.id}" ${status==='RECEBIDO'?'disabled':''}>${label}</button>
+      </div>`;
+   }).join('')}</div>`:`<div class="empty">Nenhum plano de pagamento encontrado.<br><span style="font-size:11px">Crie um orçamento e uma proposta para começar.</span></div>`}
+ </div>`;
+}
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function openModal(title,body){
+ const m=document.getElementById('modal');document.getElementById('modalBox').innerHTML=`<div style="display:flex;justify-content:space-between"><h3>${title}</h3><button class="btn btn-light" id="closeModal">Fechar</button></div>${body}`;m.classList.add('open');document.getElementById('closeModal').onclick=()=>m.classList.remove('open');
+}
+function bind(){
+ document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>render(b.dataset.page));
+ document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));
+ const pricingFields=['prolabore','fixed','variable','hours','productive','tax','margin'];
+ const readPricingFields=()=>{
+   const next={...state.pricing};
+   pricingFields.forEach(k=>{const el=document.getElementById(k);next[k]=el?parseNumber(el.value):parseNumber(next[k]);});
+   return next;
+ };
+ const renderPricingResult=(result)=>{
+   const out=document.getElementById('pricingResult');
+   const meta=document.getElementById('pricingMeta');
+   if(!out)return;
+   out.innerHTML=money(result.final)+'<span style="font-size:15px;font-weight:600"> / hora</span>';
+   if(meta){
+     meta.textContent=result.final>0?`${result.productiveHours.toFixed(1)}h faturáveis/mês · base ${money(result.before)}/h · após impostos ${money(result.afterTax)}/h`:'Preencha horas disponíveis e percentual produtivo para calcular o valor/hora.';
+     meta.style.color=result.final>0?'#6F6E68':'#8D5D49';
+   }
+ };
+ const refreshPricing=({persist=true}={})=>{
+   const temp=readPricingFields(),result=calcPricing(temp);
+   renderPricingResult(result);
+   if(persist){state.pricing={...state.pricing,...temp,hourly:result.final};save();}
+   return {temp,result};
+ };
+ pricingFields.forEach(k=>{
+   const el=document.getElementById(k);if(!el)return;
+   el.addEventListener('focus',()=>{if(el.value==='0')el.value='';});
+   el.addEventListener('input',()=>refreshPricing());
+   el.addEventListener('change',()=>refreshPricing());
+   el.addEventListener('blur',()=>{if(el.value.trim()==='')el.value='';else{el.value=String(parseNumber(el.value));refreshPricing();}});
+ });
+ const sp=document.getElementById('savePricing');
+ if(sp)sp.onclick=()=>{const {result}=refreshPricing();if(result.final<=0)return toast('Preencha horas disponíveis e percentual produtivo para salvar uma precificação válida.');toast('Precificação salva.');render('pricing');};
+ const firstPricingInput=document.getElementById('prolabore');if(firstPricingInput)refreshPricing({persist:false});
+ const ns=document.getElementById('newService');if(ns)ns.onclick=()=>serviceModal();
+ document.querySelectorAll('.editService').forEach(b=>b.onclick=()=>serviceModal(b.dataset.id));
+ document.querySelectorAll('.deleteService').forEach(b=>b.onclick=()=>{if(confirm('Excluir este serviço?')){state.services=state.services.filter(s=>s.id!==b.dataset.id);save();render('services')}})
+ const ss=document.getElementById('serviceSelect');if(ss){ss.onchange=loadSteps;document.getElementById('complexity').onchange=updateBudgetPreview}
+ const sb=document.getElementById('saveBudget');if(sb)sb.onclick=saveBudget;
+ const pb=document.getElementById('proposalBudget');if(pb)pb.onchange=()=>{proposalSelectedBudgetId=pb.value;paymentOptionActive=0;render('proposal')};
+  const ap=document.getElementById('addInstallment');if(ap)ap.onclick=addInstallment;renderPaymentPlan();
+ const sv=document.getElementById('saveProposal');if(sv)sv.onclick=saveProposal;
+  renderPaymentOptions();
+ bindProposalLiveUpdate();
+ bindScopeEditorEvents();
+ const pv=document.getElementById('previewProposal');if(pv)pv.onclick=()=>{
+  updateProposalPreview();
+  const source=document.getElementById('proposalPaper');
+  const stage=document.getElementById('proposalPreviewStage');
+  const modal=document.getElementById('proposalPreviewModal');
+  if(!source||!stage||!modal)return;
+  stage.innerHTML='';
+  [...source.querySelectorAll('.proposal-print-page')].forEach(page=>{
+    const sheet=document.createElement('div');
+    sheet.className='preview-sheet';
+    sheet.innerHTML=page.outerHTML;
+    stage.appendChild(sheet);
+  });
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+};
+ const closePv=()=>{const modal=document.getElementById('proposalPreviewModal');if(modal){modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}};
+ const closeBtn=document.getElementById('closeProposalPreview');if(closeBtn)closeBtn.onclick=closePv;
+ const modal=document.getElementById('proposalPreviewModal');if(modal)modal.addEventListener('click',e=>{if(e.target===modal)closePv()});
+ const previewPrint=document.getElementById('previewPrintProposal');if(previewPrint)previewPrint.onclick=()=>{updateProposalPreview();saveProposal(true)};
+ const logoFile=document.getElementById('logoFile');if(logoFile)logoFile.onchange=()=>{const file=logoFile.files?.[0];if(!file)return;if(file.type!=='image/png')return toast('Envie o logo em formato PNG.');if(file.size>2*1024*1024)return toast('O logo deve ter no máximo 2 MB.');const reader=new FileReader();reader.onload=()=>{state.logo=reader.result;save();const img=document.getElementById('proposalLogo');const wrap=document.getElementById('proposalLogoWrap');if(img)img.src=state.logo;if(wrap)wrap.style.display='flex';const st=document.getElementById('logoStatus');if(st)st.textContent='Logo carregado';toast('Logo adicionado à proposta.')};reader.readAsDataURL(file)};
+ const removeLogo=document.getElementById('removeLogo');if(removeLogo)removeLogo.onclick=()=>{state.logo='';save();const img=document.getElementById('proposalLogo');const wrap=document.getElementById('proposalLogoWrap');if(img)img.src='';if(wrap)wrap.style.display='none';const st=document.getElementById('logoStatus');if(st)st.textContent='Nenhum logo carregado';toast('Logo removido.')};
+ document.querySelectorAll('.statusSelect').forEach(s=>s.onchange=()=>{const b=state.budgets.find(x=>x.id===s.dataset.id);b.status=s.value;save();toast('Status atualizado.');render('control')});
+ document.querySelectorAll('.addPayment').forEach(b=>b.onclick=()=>paymentModal(b.dataset.id));
+ document.querySelectorAll('.markReceived').forEach(b=>b.onclick=()=>{const p=state.payments.find(x=>x.id===b.dataset.id);p.status='RECEBIDO';p.received=localDateISO();save();render('control')});
+  const pf=document.getElementById('paymentFilter');
+  if(pf)pf.onchange=()=>{const f=pf.value;document.querySelectorAll('.payment-row').forEach(r=>r.style.display=(f==='TODOS'||r.dataset.paymentStatus===f)?'grid':'none')};
+
+}
+function serviceModal(serviceId){
+ const s=state.services.find(x=>x.id===serviceId)||{name:'',steps:[]};
+ openModal(serviceId?'Editar serviço':'Novo serviço',`<div class="form">${field('mName','Nome do serviço','text',s.name,true)}</div><div style="margin-top:18px;font-weight:700">Etapas</div><div id="mSteps">${s.steps.map((e,i)=>stepRow(i,e)).join('')}</div><button class="btn btn-light" id="addStep" style="margin-top:10px">＋ Adicionar etapa</button><div class="actions"><button class="btn btn-dark" id="saveService">Salvar serviço</button></div>`);
+ document.getElementById('addStep').onclick=()=>{const box=document.getElementById('mSteps');const index=box.querySelectorAll('.stepRow').length;box.insertAdjacentHTML('beforeend',stepRow(index,{}));box.lastElementChild?.querySelector('.sn')?.focus()};
+ document.getElementById('saveService').onclick=()=>{
+  const steps=[...document.querySelectorAll('#mSteps .stepRow')].map(r=>({name:r.querySelector('.sn').value.trim(),hours:round2(parseNumber(r.querySelector('.sh').value))})).filter(x=>x.name);
+  if(!document.getElementById('mName').value.trim())return toast('Informe o nome do serviço.');
+  if(!steps.length)return toast('Adicione pelo menos uma etapa com horas válidas.');
+   if(steps.some(x=>x.hours<=0))return toast('Todas as etapas precisam ter horas maiores que zero.');
+   const totalHours=round2(steps.reduce((a,b)=>a+parseNumber(b.hours),0));
+  if(serviceId){
+    s.name=document.getElementById('mName').value.trim();
+    s.steps=steps;
+    s.hours=totalHours;
+  }else{
+    state.services.push({id:id(),name:document.getElementById('mName').value.trim(),steps,hours:totalHours});
+  }
+  normalizeState();
+  save();
+  document.getElementById('modal').classList.remove('open');
+  render('services');
+  toast('Serviço salvo.');
+ };
+}
+function stepRow(i,e={}){
+ const name=String(e.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
+ const hours=parseNumber(e.hours);
+ return `<div class="stepRow" style="display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;margin-top:8px">
+   <input class="sn" type="text" value="${name}" placeholder="Nome da etapa">
+   <input class="sh" type="number" min="0.01" step="0.01" inputmode="decimal" value="${hours>0?hours:''}" placeholder="Horas">
+ </div>`;
+}
+function loadSteps(){const s=state.services.find(x=>x.id===document.getElementById('serviceSelect').value);const box=document.getElementById('stepsBox');if(!s){box.innerHTML='<div class="empty">Selecione um serviço para carregar as etapas.</div>';updateBudgetPreview();return}box.innerHTML=`<div style="font-size:12px;color:#777;margin-bottom:9px">Selecione as etapas que farão parte do orçamento:</div><div class="checklist">${s.steps.map((e,i)=>`<label class="check"><input type="checkbox" class="stepCheck" data-index="${i}" data-hours="${e.hours}" checked> <span>${esc(e.name)}</span><strong style="margin-left:auto">${e.hours}h</strong></label>`).join('')}</div>`;document.querySelectorAll('.stepCheck').forEach(x=>x.onchange=updateBudgetPreview);updateBudgetPreview()}
+function updateBudgetPreview(){
+ const serviceId=document.getElementById('serviceSelect')?.value;
+ const s=state.services.find(x=>x.id===serviceId);
+ const valueEl=document.getElementById('budgetValue'),minEl=document.getElementById('budgetMin'),estEl=document.getElementById('budgetEstimated'),maxEl=document.getElementById('budgetMax'),metaEl=document.getElementById('budgetMeta');
+ if(!s){
+   [valueEl,minEl,estEl,maxEl].forEach(el=>{if(el)el.textContent=money(0)});
+   if(metaEl)metaEl.textContent='Selecione um serviço e as etapas.';
+   return;
+ }
+ const complexity=parseNumber(document.getElementById('complexity')?.value)||1;
+ const h=round2([...document.querySelectorAll('.stepCheck:checked')].reduce((a,x)=>a+parseNumber(x.dataset.hours),0)*complexity);
+ const c=calcPricing();
+ const v=round2(h*c.final), min=round2(h*c.floor), max=round2(h*c.ceiling);
+ if(valueEl)valueEl.textContent=money(v);
+ if(minEl)minEl.textContent=money(min);
+ if(estEl)estEl.textContent=money(v);
+ if(maxEl)maxEl.textContent=money(max);
+ if(metaEl){
+   metaEl.textContent=c.final>0
+     ? `${h.toFixed(1)} horas estimadas · complexidade aplicada · ${money(c.final)}/h`
+     : 'Configure sua precificação para gerar o valor do orçamento.';
+ }
+}
+function saveBudget(){
+ const client=document.getElementById('clientName')?.value.trim()||'';
+ const project=document.getElementById('project')?.value.trim()||'';
+ const sid=document.getElementById('serviceSelect')?.value||'';
+ const s=state.services.find(x=>x.id===sid);
+ if(!client||!project||!s)return toast('Informe o cliente, o nome do projeto e escolha o serviço.');
+ const selected=[...document.querySelectorAll('.stepCheck:checked')].map(x=>s.steps[Number(x.dataset.index)]).filter(Boolean);
+ if(!selected.length)return toast('Selecione pelo menos uma etapa.');
+ const pricing=calcPricing();
+ if(pricing.final<=0)return toast('Configure a precificação antes de salvar o orçamento.');
+ const complexity=parseNumber(document.getElementById('complexity')?.value)||1;
+ const hours=round2(selected.reduce((a,x)=>a+(Number(x.hours)||0),0)*complexity);
+ const value=round2(hours*pricing.final);
+ const budgetMin=round2(hours*pricing.floor);
+ const budgetMax=round2(hours*pricing.ceiling);
+ if(value<=0)return toast('O orçamento calculado precisa ser maior que zero.');
+ const b={id:id(),date:localDateISO(),client,project,service:s.name,hours,value,status:'ENVIADO',steps:selected.map(x=>x.name),range:{min:budgetMin,estimated:value,max:budgetMax}};
+ state.budgets.push(b);
+ save();
+ toast('Orçamento salvo. Abrindo Proposta Comercial...');
+ setTimeout(()=>render('proposal'),250);
+}
+function renderPaperPayment(plan){
+ const el=document.getElementById('paperPayment');
+ if(!el)return;
+ const items=(Array.isArray(plan)?plan:[]).filter(x=>(+x.amount||0)>0);
+ if(!items.length){
+   el.innerHTML='<p class="muted">Forma de pagamento não definida.</p>';
+   return;
+ }
+ el.innerHTML=`<div class="paper-payment-table">${items.map((x,i)=>`<div class="paper-payment-row"><div><strong>${esc(x.description||`Parcela ${i+1}`)}</strong>${x.due?`<span class="muted">Vencimento: ${dateBR(x.due)}</span>`:''}</div><strong>${money(x.amount)}</strong></div>`).join('')}</div>`;
+}
+
+function updateProposalPreview(){
+ const budgetId=document.getElementById('proposalBudget')?.value;
+ const b=state.budgets.find(x=>x.id===budgetId);
+ if(!b)return;
+ const get=(id)=>document.getElementById(id);
+ const title=get('propTitle'),date=get('propDate'),validity=get('propValidity'),name=get('propName'),email=get('propEmail'),phone=get('propPhone'),intro=get('propIntro'),inclusos=get('propInclusos'),naoInclusos=get('propNaoInclusos'),value=get('propValue'),bank=get('propBank'),notes=get('propNotes'),architect=get('propArchitect'),office=get('propOffice'),cau=get('propCAU'),address=get('propAddress'),technicalEnabled=get('propTechnicalEnabled'),technicalValue=get('propTechnicalValue'),technicalDescription=get('propTechnicalDescription');
+ if(architect||office||cau||address){
+   state.proposalIdentity={architect:architect?.value||'',office:office?.value||'',cau:cau?.value||'',address:address?.value||''};
+   save();
+   const footer=get('paperIdentityFooter'); if(footer)footer.textContent=proposalIdentityText();
+ }
+ const set=(id,value)=>{const el=get(id);if(el)el.textContent=value;};
+ if(title)set('paperTitle',title.value||'Proposta Comercial');
+ if(date)set('paperDate',dateBR(date.value||localDateISO()));
+ if(validity)set('paperValidity',validity.value||10);
+ if(name)set('paperName',name.value||b.client);
+ if(email||phone)set('paperContact',[email?.value||'',phone?.value?` · ${phone.value}`:''].join(''));
+ if(intro)set('paperIntro',intro.value||'Será um prazer desenvolver este projeto com você. Esta proposta apresenta o escopo, as etapas e as condições comerciais para a realização do serviço.');
+ if(notes){
+   const wrap=get('paperNotesWrap'),paper=get('paperNotes');
+   if(wrap&&paper){paper.textContent=notes.value||'';wrap.style.display=notes.value?'':'none';}
+ }
+ const setMoney=(id,val)=>{const el=get(id);if(el)el.textContent=money(round2(val));};
+ const range=getBudgetRange(b);
+ setMoney('budgetRefMin',range.min);
+ setMoney('budgetRefEstimated',range.estimated);
+ setMoney('budgetRefMax',range.max);
+ if(inclusos)set('paperInclusos',inclusos.value||defaultInclusos());
+ if(naoInclusos)set('paperNaoInclusos',naoInclusos.value||defaultNaoInclusos());
+ if(value)setMoney('paperValue',value.value||b.value);
+ if(bank){const wrap=get('paperBankWrap'),paper=get('paperBank');if(wrap&&paper){paper.textContent=bank.value||'';wrap.style.display=bank.value?'':'none';}}
+ const scope=get('paperScope');
+ if(scope){
+   const items=readScopeEditor();
+   if(items.length){
+     scope.innerHTML=`<div style="font-size:13px;color:#666;margin-bottom:9px">${esc(b.project||b.service||'Serviço contratado')}</div><div style="display:grid;gap:10px">${items.map((step,i)=>`<div style="padding:10px 12px;background:#FAFAF8;border:1px solid #EEEDE8;border-radius:9px"><div style="display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-weight:700;color:#B77989">${i+1}.</span><div><strong>${esc(step.name||`Etapa ${i+1}`)}</strong>${step.description?`<div style="font-size:12px;line-height:1.65;color:#5F625E;margin-top:4px">${esc(step.description)}</div>`:''}</div></div></div>`).join('')}</div>`;
+   }else scope.innerHTML='<p class="muted">Escopo e etapas não informados no orçamento.</p>';
+ }
+ const techWrap=get('paperTechnicalWrap'),techPaperValue=get('paperTechnicalValue'),techPaperDesc=get('paperTechnicalDescription');
+ if(techWrap&&techPaperValue&&techPaperDesc){
+   const enabled=!!technicalEnabled?.checked;
+   techWrap.style.display=enabled?'':'none';
+   techPaperValue.textContent=enabled?money(round2(technicalValue?.value||0)):'';
+   techPaperDesc.textContent=enabled?(technicalDescription?.value||defaultTechnicalSupportDescription()):'';
+ }
+ syncActivePaymentOption();
+ renderPaymentOptions();
+ renderPaperPaymentOptions(getPaymentOptions(b.id));
+}
+
+function bindProposalLiveUpdate(){
+ const ids=['propDate','propValidity','propTitle','propName','propEmail','propPhone','propIntro','propInclusos','propNaoInclusos','propValue','propBank','propNotes','propArchitect','propOffice','propCAU','propAddress','propTechnicalValue','propTechnicalDescription'];
+ ids.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateProposalPreview);});
+ const technicalEnabled=document.getElementById('propTechnicalEnabled');
+ if(technicalEnabled)technicalEnabled.addEventListener('change',()=>{
+   const editor=document.getElementById('technicalSupportEditor');
+   if(editor)editor.style.display=technicalEnabled.checked?'grid':'none';
+   updateProposalPreview();
+ });
+ document.querySelectorAll('#scopeEditor input,#scopeEditor textarea').forEach(el=>el.addEventListener('input',updateProposalPreview));
+ updateProposalPreview();
+}
+
+function getPlan(bid){
+ const saved=state.paymentPlans?.[bid];
+ if(Array.isArray(saved) && saved.length) return saved.map((x,i)=>({description:String(x.description||`Parcela ${i+1}`),amount:round2(x.amount),due:x.due||''}));
+ const prop=state.proposals.find(x=>x.budgetId===bid);
+ if(Array.isArray(prop?.paymentPlan) && prop.paymentPlan.length) return prop.paymentPlan.map((x,i)=>({description:String(x.description||`Parcela ${i+1}`),amount:round2(x.amount),due:x.due||''}));
+ const b=state.budgets.find(x=>x.id===bid), savedProp=state.proposals.find(x=>x.budgetId===bid), total=round2(savedProp?.totalValue ?? b?.value ?? 0), first=round2(total*.5);
+ return [{description:'Na contratação',amount:first,due:''},{description:'Na entrega do projeto',amount:round2(total-first),due:''}];
+}
+function defaultPaymentOptions(bid){
+ const b=state.budgets.find(x=>x.id===bid), savedProp=state.proposals.find(x=>x.budgetId===bid), total=round2(savedProp?.totalValue ?? b?.value ?? 0), half=round2(total/2);
+ return [
+   {title:'À vista',fixed:true,plan:[{description:'Pagamento à vista',amount:total,due:''}]},
+   {title:'50% Contratação + 50% Entrega Final',fixed:true,plan:[
+      {description:'50% na contratação',amount:half,due:''},
+      {description:'50% na entrega final',amount:round2(total-half),due:''}
+   ]}
+ ];
+}
+function getPaymentOptions(bid){
+ const saved=state.paymentOptions?.[bid];
+ if(Array.isArray(saved) && saved.length){
+   const normalized=saved.map((o,i)=>({title:String(o?.title||`Opção ${i+1}`),fixed:!!o?.fixed,plan:Array.isArray(o?.plan)&&o.plan.length?o.plan.map((x,j)=>({description:String(x.description||`Parcela ${j+1}`),amount:round2(x.amount),due:x.due||''})):[{description:'Pagamento',amount:0,due:''}]}));
+   // Compatibilidade com a versão anterior: se só existir a opção À vista padrão, recria também a opção 50/50.
+   if(normalized.length===1 && normalized[0].title.trim().toLowerCase()==='à vista') return defaultPaymentOptions(bid);
+   return normalized;
+ }
+ const prop=state.proposals.find(x=>x.budgetId===bid);
+ if(Array.isArray(prop?.paymentOptions) && prop.paymentOptions.length) return prop.paymentOptions.map((o,i)=>({title:String(o?.title||`Opção ${i+1}`),fixed:!!o?.fixed,plan:Array.isArray(o?.plan)&&o.plan.length?o.plan.map((x,j)=>({description:String(x.description||`Parcela ${j+1}`),amount:round2(x.amount),due:x.due||''})):[{description:'Pagamento',amount:0,due:''}]}));
+ return defaultPaymentOptions(bid);
+}
+let paymentOptionActive=0;
+function readActivePaymentPlan(){
+ return [...document.querySelectorAll('#activePaymentPlanBox .installment-row')].map((r,i)=>({description:r.querySelector('.installment-desc')?.value.trim()||`Parcela ${i+1}`,amount:round2(r.querySelector('.installment-amount')?.value||0),due:r.querySelector('.installment-due')?.value||''}));
+}
+function syncActivePaymentOption(){
+ const bid=document.getElementById('proposalBudget')?.value;if(!bid)return;
+ const opts=getPaymentOptions(bid),o=opts[paymentOptionActive];if(!o)return;
+ const title=document.getElementById('activePaymentOptionTitle');
+ if(title) o.title=title.value.trim()||`Opção ${paymentOptionActive+1}`;
+ o.plan=readActivePaymentPlan();
+ state.paymentOptions[bid]=opts;
+}
+function renderPaymentOptions(){
+ const b=state.budgets.find(x=>x.id===document.getElementById('proposalBudget')?.value),box=document.getElementById('paymentOptionsBox');if(!b||!box)return;
+ let opts=getPaymentOptions(b.id);
+ const total=round2(document.getElementById('propValue')?.value||b.value);
+ if(opts.length<2){ opts=defaultPaymentOptions(b.id); }
+ // Mantém os dois formatos base como opções fixas e preserva as opções extras criadas pelo arquiteto.
+ opts[0]={title:'À vista',fixed:true,plan:[{description:'Pagamento à vista',amount:total,due:opts[0]?.plan?.[0]?.due||''}]};
+ const half=round2(total/2);
+ opts[1]={title:'50% Contratação + 50% Entrega Final',fixed:true,plan:[
+   {description:'50% na contratação',amount:half,due:opts[1]?.plan?.[0]?.due||''},
+   {description:'50% na entrega final',amount:round2(total-half),due:opts[1]?.plan?.[1]?.due||''}
+ ]};
+ state.paymentOptions[b.id]=opts;
+ const fixed0=`<div class="card payment-option-card" style="padding:12px;border:1px solid #ECECE6;margin-bottom:10px"><div style="font-weight:800;font-size:12px;margin-bottom:8px">À vista</div><div class="payment-plan-box">${fixedPlanRow(opts[0].plan[0],0,'Pagamento à vista',true)}</div><div class="plan-summary" style="margin-top:8px">Total da proposta: <strong>${money(total)}</strong></div></div>`;
+ const fixed1=`<div class="card payment-option-card" style="padding:12px;border:1px solid #ECECE6;margin-bottom:10px"><div style="font-weight:800;font-size:12px;margin-bottom:8px">50% Contratação + 50% Entrega Final</div><div class="payment-plan-box">${fixedPlanRow(opts[1].plan[0],0,'50% na contratação',true)}${fixedPlanRow(opts[1].plan[1],1,'50% na entrega final',true)}</div><div class="plan-summary" style="margin-top:8px">Total da proposta: <strong>${money(total)}</strong></div></div>`;
+ const extraBlocks=opts.slice(2).map((o,i)=>{
+   const idx=i+2;
+   const rows=(o.plan||[]).map((x,j)=>`<div class="installment-row"><span class="installment-number">${j+1}</span><input class="installment-desc" value="${esc(x.description)}" placeholder="Descrição"><input class="installment-amount" type="number" step="0.01" min="0" value="${round2(x.amount).toFixed(2)}" placeholder="Valor"><input class="installment-due" type="date" value="${esc(x.due||'')}"><button type="button" class="btn btn-danger removeInstallment">Excluir</button></div>`).join('');
+   return `<div class="card payment-option-card custom-payment-option" data-option-index="${idx}" style="padding:12px;border:1px solid #ECECE6;margin-bottom:10px"><div class="field"><label>Nome da opção</label><input class="custom-payment-option-title" type="text" value="${esc(o.title||`Opção ${idx+1}`)}" placeholder="Ex.: 30% de entrada + parcelas"></div><div class="payment-plan-box">${rows}</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button type="button" class="btn btn-light addExtraInstallment">＋ Adicionar parcela</button><button type="button" class="btn btn-danger removePaymentOption" data-option-index="${idx}">Excluir esta opção</button></div><div class="plan-summary extra-summary" style="margin-top:8px"></div></div>`;
+ }).join('');
+ box.innerHTML=`${fixed0}${fixed1}${extraBlocks}`;
+ // Opções fixas não possuem botão de adicionar parcela. Elas são sempre recalculadas sobre o valor total da proposta.
+ box.querySelectorAll('.custom-payment-option-title').forEach((el,idx)=>el.addEventListener('input',()=>{const oidx=idx+2;const ops=getPaymentOptions(b.id);if(ops[oidx]){ops[oidx].title=el.value.trim()||`Opção ${oidx+1}`;state.paymentOptions[b.id]=ops;}updateProposalPreview();}));
+ box.querySelectorAll('.custom-payment-option').forEach(card=>{
+   const oidx=Number(card.dataset.optionIndex);
+   card.querySelectorAll('.installment-desc,.installment-amount,.installment-due').forEach(el=>el.addEventListener('input',()=>{const ops=getPaymentOptions(b.id);if(ops[oidx]){ops[oidx].plan=[...card.querySelectorAll('.installment-row')].map((r,j)=>({description:r.querySelector('.installment-desc')?.value.trim()||`Parcela ${j+1}`,amount:round2(r.querySelector('.installment-amount')?.value||0),due:r.querySelector('.installment-due')?.value||''}));state.paymentOptions[b.id]=ops;}updateProposalPreview();}));
+   card.querySelectorAll('.removeInstallment').forEach(btn=>btn.onclick=()=>{btn.parentElement.remove();renumberCard(card);syncCustomCard(card,oidx,b.id);updateProposalPreview();});
+   card.querySelector('.addExtraInstallment')?.addEventListener('click',()=>{const ops=getPaymentOptions(b.id);if(!ops[oidx])return;ops[oidx].plan.push({description:`Parcela ${ops[oidx].plan.length+1}`,amount:0,due:''});state.paymentOptions[b.id]=ops;renderPaymentOptions();updateProposalPreview();});
+ });
+ box.querySelectorAll('.removePaymentOption').forEach(btn=>btn.onclick=()=>{const idx=Number(btn.dataset.optionIndex);const ops=getPaymentOptions(b.id);if(idx<2)return;ops.splice(idx,1);state.paymentOptions[b.id]=ops;renderPaymentOptions();updateProposalPreview();});
+ document.getElementById('addPaymentOption')&&(document.getElementById('addPaymentOption').onclick=()=>{const ops=getPaymentOptions(b.id);ops.push({title:`Outra opção`,fixed:false,plan:[{description:'Parcela 1',amount:0,due:''}]});state.paymentOptions[b.id]=ops;renderPaymentOptions();updateProposalPreview();});
+ box.querySelectorAll('.custom-payment-option').forEach(card=>syncCustomCard(card,Number(card.dataset.optionIndex),b.id));
+}
+function fixedPlanRow(x,i,placeholder,readonly=false){
+ return `<div class="installment-row"><span class="installment-number">${i+1}</span><input class="installment-desc" value="${esc(x.description||placeholder)}" readonly style="background:#F7F7F4"><input class="installment-amount" type="number" step="0.01" min="0" value="${round2(x.amount).toFixed(2)}" readonly style="background:#F7F7F4"><input class="installment-due" type="date" value="${esc(x.due||'')}" ${readonly?'readonly style="background:#F7F7F4"':''}></div>`;
+}
+function syncCustomCard(card,oidx,bid){
+ const ops=getPaymentOptions(bid),o=ops[oidx];if(!o)return;
+ o.title=card.querySelector('.custom-payment-option-title')?.value.trim()||`Opção ${oidx+1}`;
+ o.plan=[...card.querySelectorAll('.installment-row')].map((r,j)=>({description:r.querySelector('.installment-desc')?.value.trim()||`Parcela ${j+1}`,amount:round2(r.querySelector('.installment-amount')?.value||0),due:r.querySelector('.installment-due')?.value||''}));
+ state.paymentOptions[bid]=ops;
+ const total=round2(document.getElementById('propValue')?.value||state.budgets.find(x=>x.id===bid)?.value||0),sum=round2(o.plan.reduce((a,x)=>a+x.amount,0)),diff=round2(total-sum),summary=card.querySelector('.extra-summary');
+ if(summary)summary.innerHTML=`Total da proposta: <strong>${money(total)}</strong> · Esta opção: <strong>${money(sum)}</strong> · <span class="${Math.abs(diff)<.01?'plan-ok':'plan-warning'}">${Math.abs(diff)<.01?'✓ Valores conferem':'⚠ Diferença: '+money(diff)}</span>`;
+}
+function renumberCard(card){card.querySelectorAll('.installment-number').forEach((x,i)=>x.textContent=i+1)}
+function readPaymentOptions(){
+ const bid=document.getElementById('proposalBudget')?.value;if(!bid)return [];
+ const opts=getPaymentOptions(bid);
+ // Captura qualquer edição feita nas opções extras antes de salvar.
+ document.querySelectorAll('.custom-payment-option').forEach(card=>syncCustomCard(card,Number(card.dataset.optionIndex),bid));
+ return getPaymentOptions(bid);
+}
+function renderPaperPaymentOptions(options){
+ const el=document.getElementById('paperPayment');if(!el)return;
+ if(!Array.isArray(options)||!options.length){el.innerHTML='<p class="muted">Forma de pagamento não definida.</p>';return;}
+ const visible=options.filter(o=>(o.plan||[]).some(x=>(+x.amount||0)>0));
+ if(!visible.length){el.innerHTML='<p class="muted">Forma de pagamento não definida.</p>';return;}
+ const cards=visible.map((opt,i)=>{
+   const isCash=String(opt.title||'').trim().toLowerCase()==='à vista';
+   const rows=(opt.plan||[]).filter(x=>(+x.amount||0)>0).map((x,j)=>`<div class="paper-payment-row"><div>${!isCash?`<strong>${esc(x.description||`Parcela ${j+1}`)}</strong>`:''}${x.due?`<span class="muted" style="display:block;margin-top:3px">Vencimento: ${dateBR(x.due)}</span>`:''}</div><strong>${money(x.amount)}</strong></div>`).join('');
+   const sum=(opt.plan||[]).reduce((a,x)=>a+(+x.amount||0),0);
+   const totalBlock=isCash?'':`<div class="paper-payment-total"><span>Total desta opção</span><strong>${money(sum)}</strong></div>`;
+   return `<div class="paper-payment-option"><div class="paper-payment-option-head"><div class="paper-payment-option-title">${esc(opt.title||`Opção ${i+1}`)}</div><span class="paper-payment-option-badge">Opção ${i+1}</span></div><div class="paper-payment-table">${rows}</div>${totalBlock}</div>`;
+ }).join('');
+ el.innerHTML=`<div class="paper-payment-choice-note"><strong>Escolha uma das opções de pagamento abaixo.</strong> As condições são alternativas e não cumulativas.</div><div class="paper-payment-choice-label">Condições de pagamento</div>${cards}`;
+}
+function renderPaymentPlan(plan){renderPaperPaymentOptions([{title:'Condições de pagamento',plan:Array.isArray(plan)?plan:[]}]);}
+
+function saveProposal(print=false){
+ const budgetId=document.getElementById('proposalBudget')?.value;
+ const b=state.budgets.find(x=>x.id===budgetId);if(!b)return;
+ const totalValue=round2(document.getElementById('propValue')?.value||b.value);
+ const paymentOptions=readPaymentOptions();
+ const invalidOption=paymentOptions.findIndex(o=>Math.abs(round2((o.plan||[]).reduce((a,x)=>a+x.amount,0))-totalValue)>.01);
+ if(totalValue<=0)return toast('Informe um valor total válido para a proposta.');
+ if(invalidOption>=0)return toast(`A ${paymentOptions[invalidOption].title||`opção ${invalidOption+1}`} precisa somar exatamente o valor da proposta.`);
+ const plan=Array.isArray(state.paymentPlans?.[b.id])&&state.paymentPlans[b.id].length?state.paymentPlans[b.id]:(paymentOptions[0]?.plan||[]);
+
+ const prop={
+   budgetId:b.id,
+   date:document.getElementById('propDate').value,
+   validity:+document.getElementById('propValidity').value||10,
+   totalValue,
+   title:document.getElementById('propTitle').value,
+   name:document.getElementById('propName').value,
+   email:document.getElementById('propEmail').value,
+   phone:document.getElementById('propPhone').value,
+   intro:document.getElementById('propIntro').value,
+   scopeItems:readScopeEditor(),
+   technicalSupport:{
+     enabled:!!document.getElementById('propTechnicalEnabled')?.checked,
+     value:round2(document.getElementById('propTechnicalValue')?.value||0),
+     description:document.getElementById('propTechnicalDescription')?.value.trim()||defaultTechnicalSupportDescription()
+   },
+   inclusos:document.getElementById('propInclusos').value,
+   naoInclusos:document.getElementById('propNaoInclusos').value,
+   bankDetails:document.getElementById('propBank').value,
+   paymentOptions,
+   paymentPlan:plan,
+   payment:paymentOptions.map(o=>`${o.title}: ${(o.plan||[]).map(x=>`${x.description}: ${money(x.amount)}${x.due?' · '+dateBR(x.due):''}`).join(' | ')}`).join(' || '),
+   notes:document.getElementById('propNotes').value,
+   proposalIdentity:{...state.proposalIdentity}
+ };
+
+ state.proposalScopeTemplate=readScopeEditor();
+ state.paymentOptions[b.id]=paymentOptions;
+ state.proposalTechnicalSupport={
+   enabled:!!document.getElementById('propTechnicalEnabled')?.checked,
+   value:round2(document.getElementById('propTechnicalValue')?.value||0),
+   description:document.getElementById('propTechnicalDescription')?.value.trim()||defaultTechnicalSupportDescription()
+ };
+ state.paymentPlans=state.paymentPlans||{};
+ state.paymentPlans[b.id]=plan;
+
+ // Keep the saved proposal and its payment plan synchronized.
+ prop.paymentPlan=plan.map(x=>({description:x.description,amount:x.amount,due:x.due}));
+
+ const old=state.proposals.findIndex(x=>x.budgetId===b.id);
+ if(old>=0)state.proposals[old]=prop;else state.proposals.push(prop);
+ save();
+
+ if(print){
+   toast('Proposta atualizada.');
+   setTimeout(()=>window.print(),100);
+ }else{
+   toast('Proposta salva. Confira a pré-visualização antes de gerar o PDF.');
+   proposalSelectedBudgetId=budgetId;
+   updateProposalPreview();
+   openProposalPreview();
+ }
+}
+
+function paymentModal(bid){
+ const b=state.budgets.find(x=>x.id===bid),plan=getPlan(bid);
+ if(!b)return;
+ const available=plan.map((x,i)=>({ ...x,index:i,info:getInstallmentInfo(bid,i,x)})).filter(x=>x.info.balance>.009);
+ if(!available.length)return toast('Não há parcelas em aberto para este orçamento.');
+ openModal('Registrar recebimento',`<div class="payment-context"><div><span>Cliente</span><strong>${esc(b.client)}</strong></div><div><span>Valor total</span><strong>${money(b.value)}</strong></div></div><div class="form"><div class="field full"><label>Parcela</label><select id="payInstallment">${available.map(x=>`<option value="${x.index}" data-balance="${x.info.balance}">${x.index+1}. ${esc(x.description)} — ${money(x.info.balance)} restante</option>`).join('')}</select></div>${field('payAmount','Valor recebido','number',available[0]?.info.balance||0)}${field('payDue','Data do recebimento','date',localDateISO())}</div><div class="note payment-note">O recebimento é vinculado à parcela escolhida. O saldo da parcela diminui automaticamente.</div><div class="actions"><button class="btn btn-dark" id="savePayment">Registrar recebimento</button></div>`);
+ const sel=document.getElementById('payInstallment');
+ if(sel)sel.onchange=()=>{const amount=document.getElementById('payAmount');if(amount)amount.value=(Number(sel.selectedOptions[0].dataset.balance)||0).toFixed(2)};
+ const saveBtn=document.getElementById('savePayment');
+ if(saveBtn)saveBtn.onclick=()=>{
+   const idx=Number(sel?.value);
+   const amount=round2(document.getElementById('payAmount')?.value||0);
+   const item=plan[idx];
+   if(!item||amount<=0)return toast('Informe um valor válido.');
+   const remaining=getInstallmentInfo(bid,idx,item).balance;
+   if(amount>remaining+.01)return toast(`O valor máximo desta parcela é ${money(remaining)}.`);
+   state.payments.push({id:id(),budgetId:bid,client:b.client,installmentIndex:idx,installment:item.description,amount,due:document.getElementById('payDue')?.value||'',status:'RECEBIDO',received:localDateISO()});
+   save();document.getElementById('modal').classList.remove('open');render('control');toast('Recebimento registrado.');
+ };
+}
+
+
+window.addEventListener('error',e=>{console.error('ARQFLOW:',e.error||e.message);});
+window.addEventListener('unhandledrejection',e=>{console.error('ARQFLOW:',e.reason);});
+render('dashboard');
+</script>
+</body>
+</html>
